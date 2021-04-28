@@ -1,0 +1,29 @@
+
+modLoader="javafml"
+loaderVersion="[36,)"
+license="All rights reserved"
+issueTrackerURL="https://github.com/Iunius118/RxHandcart/issues"
+
+[[mods]]
+modId="rxhandcart"
+version="${file.jarVersion}"
+displayName="RxHandcart"
+# updateJSONURL=""
+displayURL="https://github.com/Iunius118/RxHandcart"
+# logoFile=""
+credits="Created by Iunius118"
+authors="Iunius118"
+description="Adds a handcart."
+
+[[dependencies.rxhandcart]]
+    modId="forge"
+    mandatory=true
+    versionRange="[36,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.rxhandcart]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.5,1.17)"
+    ordering="NONE"
+    side="BOTH"

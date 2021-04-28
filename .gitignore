@@ -1,0 +1,19 @@
+
+# Ignore all
+/*
+
+# Exclude source
+!/src/
+
+# Gradle
+!/gradle/
+!gradle.properties
+!settings.gradle
+!build.gradle
+!gradlew*
+
+# Others
+!.gitignore
+!.gitattributes
+!*.md
+!LICENSE
