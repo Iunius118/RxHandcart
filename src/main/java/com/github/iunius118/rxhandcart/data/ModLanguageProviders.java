@@ -19,6 +19,7 @@ public class ModLanguageProviders {
         @Override
         protected void addTranslations() {
             add(ModItems.HANDCART, "Handcart");
+            add("container.rxhandcart.handcart", "Handcart");
         }
     }
 
@@ -30,6 +31,7 @@ public class ModLanguageProviders {
         @Override
         protected void addTranslations() {
             add(ModItems.HANDCART, "荷車");
+            add("container.rxhandcart.handcart", "荷車");
         }
     }
 }
