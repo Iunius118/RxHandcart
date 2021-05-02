@@ -1,8 +1,8 @@
 package com.github.iunius118.rxhandcart;
 
-import com.github.iunius118.rxhandcart.capability.CapabilityHandcartHandler;
+import com.github.iunius118.rxhandcart.capability.HandcartHandlerCapability;
+import com.github.iunius118.rxhandcart.capability.HandcartHandlerCapabilityProvider;
 import com.github.iunius118.rxhandcart.capability.IHandcartHandler;
-import com.github.iunius118.rxhandcart.capability.ItemHandlerCapabilityProvider;
 import com.github.iunius118.rxhandcart.data.ModItemModelProvider;
 import com.github.iunius118.rxhandcart.data.ModLanguageProviders;
 import com.github.iunius118.rxhandcart.item.HandcartItem;
@@ -43,7 +43,7 @@ public class RxHandcart {
 
     private void setup(final FMLCommonSetupEvent event) {
         // Register capabilities
-        CapabilityHandcartHandler.register();
+        HandcartHandlerCapability.register();
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
@@ -56,7 +56,7 @@ public class RxHandcart {
 
         if(entity instanceof PlayerEntity) {
             // Add Handcart capability to players
-            event.addCapability(HANDCART_KEY, new ItemHandlerCapabilityProvider());
+            event.addCapability(HANDCART_KEY, new HandcartHandlerCapabilityProvider());
         }
     }
 
@@ -67,8 +67,8 @@ public class RxHandcart {
         // Copy old capability's stacks to new capability when player respawn
         PlayerEntity oldPlayer = event.getOriginal();
         PlayerEntity newPlayer = event.getPlayer();
-        Optional<IHandcartHandler> oldHandlerOptional = oldPlayer.getCapability(CapabilityHandcartHandler.HANDCART_HANDLER_CAPABILITY).resolve();
-        Optional<IHandcartHandler> newHandlerOptional = newPlayer.getCapability(CapabilityHandcartHandler.HANDCART_HANDLER_CAPABILITY).resolve();
+        Optional<IHandcartHandler> oldHandlerOptional = oldPlayer.getCapability(HandcartHandlerCapability.HANDCART_HANDLER_CAPABILITY).resolve();
+        Optional<IHandcartHandler> newHandlerOptional = newPlayer.getCapability(HandcartHandlerCapability.HANDCART_HANDLER_CAPABILITY).resolve();
 
         if (oldHandlerOptional.isPresent() && newHandlerOptional.isPresent()) {
             newHandlerOptional.get().cloneStacksFrom(oldHandlerOptional.get());

@@ -1,6 +1,6 @@
 package com.github.iunius118.rxhandcart.item;
 
-import com.github.iunius118.rxhandcart.capability.CapabilityHandcartHandler;
+import com.github.iunius118.rxhandcart.capability.HandcartHandlerCapability;
 import com.github.iunius118.rxhandcart.capability.IHandcartHandler;
 import com.github.iunius118.rxhandcart.inventory.HandcartInventory;
 import net.minecraft.entity.player.PlayerEntity;
@@ -49,7 +49,7 @@ public class HandcartItem extends Item {
 
     @Nullable
     private IInventory getCartInventory(PlayerEntity player) {
-        Optional<IHandcartHandler> handlerOptional = player.getCapability(CapabilityHandcartHandler.HANDCART_HANDLER_CAPABILITY).resolve();
+        Optional<IHandcartHandler> handlerOptional = player.getCapability(HandcartHandlerCapability.HANDCART_HANDLER_CAPABILITY).resolve();
         // Wrap capability in inventory
         return handlerOptional.map(iHandcartHandler -> new HandcartInventory(iHandcartHandler.getItemHandler())).orElse(null);
     }

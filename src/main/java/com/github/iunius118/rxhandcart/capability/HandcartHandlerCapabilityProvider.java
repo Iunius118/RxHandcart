@@ -10,7 +10,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ItemHandlerCapabilityProvider implements ICapabilitySerializable<INBT> {
+public class HandcartHandlerCapabilityProvider implements ICapabilitySerializable<INBT> {
     @CapabilityInject(IHandcartHandler.class)
     public static Capability<IHandcartHandler> HANDCART_HANDLER_CAPABILITY = null;
     protected LazyOptional<IHandcartHandler> inst = LazyOptional.of(HandcartHandler::new);

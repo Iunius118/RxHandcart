@@ -10,7 +10,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class CapabilityHandcartHandler {
+public class HandcartHandlerCapability {
     @CapabilityInject(IHandcartHandler.class)
     public static Capability<IHandcartHandler> HANDCART_HANDLER_CAPABILITY = null;
 
