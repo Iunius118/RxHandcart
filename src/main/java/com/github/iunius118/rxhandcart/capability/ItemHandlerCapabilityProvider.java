@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 public class ItemHandlerCapabilityProvider implements ICapabilitySerializable<INBT> {
     @CapabilityInject(IHandcartHandler.class)
     public static Capability<IHandcartHandler> HANDCART_HANDLER_CAPABILITY = null;
-    protected LazyOptional<IHandcartHandler> inst = LazyOptional.of(HandcartItemStackHandler::new);
+    protected LazyOptional<IHandcartHandler> inst = LazyOptional.of(HandcartHandler::new);
 
     @Nonnull
     @Override
@@ -23,14 +23,14 @@ public class ItemHandlerCapabilityProvider implements ICapabilitySerializable<IN
 
     @Override
     public INBT serializeNBT() {
-        IHandcartHandler handcartHandler = inst.orElseGet(HandcartItemStackHandler::new);
+        IHandcartHandler handcartHandler = inst.orElseGet(HandcartHandler::new);
         Capability.IStorage<IHandcartHandler> storage = HANDCART_HANDLER_CAPABILITY.getStorage();
         return storage.writeNBT(HANDCART_HANDLER_CAPABILITY, handcartHandler, null);
     }
 
     @Override
     public void deserializeNBT(INBT nbt) {
-        IHandcartHandler handcartHandler = inst.orElseGet(HandcartItemStackHandler::new);
+        IHandcartHandler handcartHandler = inst.orElseGet(HandcartHandler::new);
         Capability.IStorage<IHandcartHandler> storage = HANDCART_HANDLER_CAPABILITY.getStorage();
         storage.readNBT(HANDCART_HANDLER_CAPABILITY, handcartHandler, null, nbt);
     }

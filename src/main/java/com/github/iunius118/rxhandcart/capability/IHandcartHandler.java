@@ -1,13 +1,12 @@
 package com.github.iunius118.rxhandcart.capability;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
+
 public interface IHandcartHandler {
+    @Nonnull
     ItemStackHandler getItemHandler();
 
-    NonNullList<ItemStack> getStacks();
-
-    void cloneStacksFrom(NonNullList<ItemStack> stacks);
+    void cloneStacksFrom(@Nonnull IHandcartHandler original);
 }

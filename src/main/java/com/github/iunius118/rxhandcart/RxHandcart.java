@@ -11,8 +11,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -72,8 +70,7 @@ public class RxHandcart {
         Optional<IHandcartHandler> newHandlerOptional = newPlayer.getCapability(CapabilityHandcartHandler.HANDCART_HANDLER_CAPABILITY).resolve();
 
         if (oldHandlerOptional.isPresent() && newHandlerOptional.isPresent()) {
-            NonNullList<ItemStack> stacks = oldHandlerOptional.get().getStacks();
-            newHandlerOptional.get().cloneStacksFrom(stacks);
+            newHandlerOptional.get().cloneStacksFrom(oldHandlerOptional.get());
         }
     }
 

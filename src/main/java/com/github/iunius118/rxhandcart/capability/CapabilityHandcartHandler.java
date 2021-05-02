@@ -50,6 +50,6 @@ public class CapabilityHandcartHandler {
                     }
                 }
             }
-        }, HandcartItemStackHandler::new);
+        }, HandcartHandler::new);
     }
 }
