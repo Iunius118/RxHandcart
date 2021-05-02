@@ -54,7 +54,7 @@ public class HandcartInventory implements IInventory {
 
     @Override
     public void setItem(int slot, ItemStack stack) {
-        itemStackHandler.insertItem(slot, stack, false);
+        itemStackHandler.setStackInSlot(slot, stack);
     }
 
     @Override
