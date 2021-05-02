@@ -16,10 +16,11 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 public class HandcartItem extends Item {
-    private static final ITextComponent CONTAINER_TITLE = new TranslationTextComponent("container.rxhandcart.handcart");
+    public static final ITextComponent CONTAINER_TITLE = new TranslationTextComponent("container.rxhandcart.handcart");
 
     public HandcartItem(Properties properties) {
         super(properties);
@@ -32,7 +33,7 @@ public class HandcartItem extends Item {
         if (world.isClientSide) {
             return ActionResult.success(stack);
         } else {
-            openCartChest(player, stack);
+            openCartChest(player, stack);   // Open Handcart inventory's GUI
             return ActionResult.consume(stack);
         }
     }
@@ -46,8 +47,10 @@ public class HandcartItem extends Item {
         }
     }
 
+    @Nullable
     private IInventory getCartInventory(PlayerEntity player) {
         Optional<IHandcartHandler> handlerOptional = player.getCapability(CapabilityHandcartHandler.HANDCART_HANDLER_CAPABILITY).resolve();
+        // Wrap capability in inventory
         return handlerOptional.map(iHandcartHandler -> new HandcartInventory(iHandcartHandler.getItemHandler())).orElse(null);
     }
 

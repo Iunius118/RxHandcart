@@ -55,6 +55,7 @@ public class RxHandcart {
         Entity entity = event.getObject();
 
         if(entity instanceof PlayerEntity) {
+            // Add Handcart capability to players
             event.addCapability(HANDCART_KEY, new ItemHandlerCapabilityProvider());
         }
     }
@@ -63,7 +64,7 @@ public class RxHandcart {
     public void onPlayerClone(PlayerEvent.Clone event) {
         if (!event.isWasDeath()) return;    // Return from End
 
-        // Copy old capability's stacks to new capability
+        // Copy old capability's stacks to new capability when player respawn
         PlayerEntity oldPlayer = event.getOriginal();
         PlayerEntity newPlayer = event.getPlayer();
         Optional<IHandcartHandler> oldHandlerOptional = oldPlayer.getCapability(CapabilityHandcartHandler.HANDCART_HANDLER_CAPABILITY).resolve();
