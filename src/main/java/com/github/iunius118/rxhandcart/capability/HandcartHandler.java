@@ -13,8 +13,8 @@ public class HandcartHandler implements IHandcartHandler {
         itemStackHandler = new ItemStackHandler(HandcartInventory.SIZE);
     }
 
-    @Override
     @Nonnull
+    @Override
     public ItemStackHandler getItemHandler() {
         return itemStackHandler;
     }

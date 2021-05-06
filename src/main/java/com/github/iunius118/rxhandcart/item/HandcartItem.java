@@ -1,7 +1,7 @@
 package com.github.iunius118.rxhandcart.item;
 
-import com.github.iunius118.rxhandcart.capability.HandcartHandlerCapability;
 import com.github.iunius118.rxhandcart.capability.IHandcartHandler;
+import com.github.iunius118.rxhandcart.capability.ModCapabilities;
 import com.github.iunius118.rxhandcart.inventory.HandcartInventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
@@ -33,7 +33,8 @@ public class HandcartItem extends Item {
         if (world.isClientSide) {
             return ActionResult.success(stack);
         } else {
-            openCartChest(player, stack);   // Open Handcart inventory's GUI
+            // Open Handcart inventory's GUI
+            openCartChest(player, stack);
             return ActionResult.consume(stack);
         }
     }
@@ -42,23 +43,25 @@ public class HandcartItem extends Item {
         IInventory inventory = getCartInventory(player);
 
         if (inventory != null) {
-            player.openMenu(new SimpleNamedContainerProvider((id, pi, p) -> ChestContainer.threeRows(id, pi, inventory), getContainerTitle(stack)));
+            ITextComponent title = getContainerTitle(stack);
+            player.openMenu(new SimpleNamedContainerProvider((id, pi, p) -> ChestContainer.threeRows(id, pi, inventory), title));
             player.awardStat(Stats.CUSTOM.get(Stats.OPEN_CHEST));
         }
     }
 
     @Nullable
     private IInventory getCartInventory(PlayerEntity player) {
-        Optional<IHandcartHandler> handlerOptional = player.getCapability(HandcartHandlerCapability.HANDCART_HANDLER_CAPABILITY).resolve();
-        // Wrap capability in inventory
-        return handlerOptional.map(iHandcartHandler -> new HandcartInventory(iHandcartHandler.getItemHandler())).orElse(null);
+        Optional<IHandcartHandler> handlerOptional = player.getCapability(ModCapabilities.HANDCART_HANDLER_CAPABILITY).resolve();
+        // Wrap capability's item handler in inventory object
+        // if handcartHandler != null then return inventory else return null
+        return handlerOptional.map(handcartHandler -> new HandcartInventory(handcartHandler.getItemHandler())).orElse(null);
     }
 
     private ITextComponent getContainerTitle(ItemStack stack) {
         if (stack.hasCustomHoverName()) {
-            return stack.getDisplayName();
+            return stack.getHoverName();
+        } else {
+            return CONTAINER_TITLE;
         }
-
-        return CONTAINER_TITLE;
     }
 }

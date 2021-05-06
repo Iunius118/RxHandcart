@@ -1,8 +1,8 @@
 package com.github.iunius118.rxhandcart;
 
 import com.github.iunius118.rxhandcart.capability.HandcartHandlerCapability;
-import com.github.iunius118.rxhandcart.capability.HandcartHandlerCapabilityProvider;
 import com.github.iunius118.rxhandcart.capability.IHandcartHandler;
+import com.github.iunius118.rxhandcart.capability.ModCapabilities;
 import com.github.iunius118.rxhandcart.data.ModItemModelProvider;
 import com.github.iunius118.rxhandcart.data.ModLanguageProviders;
 import com.github.iunius118.rxhandcart.item.HandcartItem;
@@ -13,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -56,7 +57,7 @@ public class RxHandcart {
 
         if(entity instanceof PlayerEntity) {
             // Add Handcart capability to players
-            event.addCapability(HANDCART_KEY, new HandcartHandlerCapabilityProvider());
+            event.addCapability(HANDCART_KEY, new HandcartHandlerCapability.Provider());
         }
     }
 
@@ -67,8 +68,13 @@ public class RxHandcart {
         // Copy old capability's stacks to new capability when player respawn
         PlayerEntity oldPlayer = event.getOriginal();
         PlayerEntity newPlayer = event.getPlayer();
-        Optional<IHandcartHandler> oldHandlerOptional = oldPlayer.getCapability(HandcartHandlerCapability.HANDCART_HANDLER_CAPABILITY).resolve();
-        Optional<IHandcartHandler> newHandlerOptional = newPlayer.getCapability(HandcartHandlerCapability.HANDCART_HANDLER_CAPABILITY).resolve();
+        cloneHandcartHandler(oldPlayer, newPlayer);
+    }
+
+    private void cloneHandcartHandler(PlayerEntity oldPlayer, PlayerEntity newPlayer){
+        Capability<IHandcartHandler> capability = ModCapabilities.HANDCART_HANDLER_CAPABILITY;
+        Optional<IHandcartHandler> oldHandlerOptional = oldPlayer.getCapability(capability).resolve();
+        Optional<IHandcartHandler> newHandlerOptional = newPlayer.getCapability(capability).resolve();
 
         if (oldHandlerOptional.isPresent() && newHandlerOptional.isPresent()) {
             newHandlerOptional.get().cloneStacksFrom(oldHandlerOptional.get());
