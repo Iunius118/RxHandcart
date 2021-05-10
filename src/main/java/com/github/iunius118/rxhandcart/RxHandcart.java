@@ -6,6 +6,7 @@ import com.github.iunius118.rxhandcart.capability.ModCapabilities;
 import com.github.iunius118.rxhandcart.client.ClientEventHandler;
 import com.github.iunius118.rxhandcart.data.ModItemModelProvider;
 import com.github.iunius118.rxhandcart.data.ModLanguageProviders;
+import com.github.iunius118.rxhandcart.data.ModRecipeProvider;
 import com.github.iunius118.rxhandcart.item.HandcartItem;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.entity.Entity;
@@ -100,7 +101,7 @@ public class RxHandcart {
             DataGenerator generator = event.getGenerator();
 
             if (event.includeServer()) {
-
+                generator.addProvider(new ModRecipeProvider(generator));
             }
 
             if (event.includeClient()) {
