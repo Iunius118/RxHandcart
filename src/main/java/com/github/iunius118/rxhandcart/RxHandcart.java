@@ -3,6 +3,7 @@ package com.github.iunius118.rxhandcart;
 import com.github.iunius118.rxhandcart.capability.HandcartHandlerCapability;
 import com.github.iunius118.rxhandcart.capability.IHandcartHandler;
 import com.github.iunius118.rxhandcart.capability.ModCapabilities;
+import com.github.iunius118.rxhandcart.client.ClientEventHandler;
 import com.github.iunius118.rxhandcart.data.ModItemModelProvider;
 import com.github.iunius118.rxhandcart.data.ModLanguageProviders;
 import com.github.iunius118.rxhandcart.item.HandcartItem;
@@ -18,12 +19,13 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,23 +34,26 @@ import java.util.Optional;
 @Mod(RxHandcart.MOD_ID)
 public class RxHandcart {
     public static final String MOD_ID = "rxhandcart";
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
     public static final ResourceLocation HANDCART_KEY = new ResourceLocation(MOD_ID, "handcart");
 
     public RxHandcart() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
+        // Register lifecycle event listeners
+        final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.addListener(this::setup);
 
+        // Register event handlers
         MinecraftForge.EVENT_BUS.register(this);
+
+        // Register client-side event handler
+        if (FMLLoader.getDist().isClient()) {
+            MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
+        }
     }
 
     private void setup(final FMLCommonSetupEvent event) {
         // Register capabilities
         HandcartHandlerCapability.register();
-    }
-
-    private void doClientStuff(final FMLClientSetupEvent event) {
-
     }
 
     @SubscribeEvent
