@@ -26,20 +26,25 @@ public class HandcartManager {
     }
 
     public static void addHandcart(Entity entity) {
-        Map<Integer, Handcart> handcarts = handcartMaps.get(1 - index); // Add handcart to back side map
+        // Add handcart to back side map
+        Map<Integer, Handcart> handcarts = handcartMaps.get(1 - index);
         handcarts.put(entity.getId(), new Handcart(entity));
     }
 
     @Nullable
     public static Handcart getHandcart(int entityId) {
-        Map<Integer, Handcart> handcarts = handcartMaps.get(index); // Get handcart from front side map
+        // Get handcart from front side map
+        Map<Integer, Handcart> handcarts = handcartMaps.get(index);
         return handcarts.get(entityId);
     }
 
     public static void tick() {
-        index = 1 - index;  // Reverse index
+        // Reverse index
+        index = 1 - index;
+
         Map<Integer, Handcart> prevHandcarts = handcartMaps.get(1 - index);
-        prevHandcarts.clear();  // Clear back side map
+        // Clear back side map
+        prevHandcarts.clear();
     }
 
     public static class Handcart {

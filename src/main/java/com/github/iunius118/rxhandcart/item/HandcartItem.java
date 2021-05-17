@@ -31,7 +31,8 @@ public class HandcartItem extends Item {
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
         if (world.isClientSide && stack.getItem() instanceof HandcartItem) {
-            updateHandcart(entity); // Update handcarts on client-side world for rendering
+            // Update handcarts on client-side world for rendering
+            updateHandcart(entity);
         }
     }
 
