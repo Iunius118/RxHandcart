@@ -24,13 +24,14 @@ public class HandcartRenderer {
     private static final RenderType SHADOW_RENDER_TYPE = RenderType.entityShadow(new ResourceLocation("textures/misc/shadow.png"));
     private static final float SHADOW_RADIUS = 0.75F;
 
+    // Render handcarts in third person view
     public void renderHandcartTP(PlayerEntity player, float partialTick, MatrixStack matrixStack, IRenderTypeBuffer renderBuffer) {
         int id = player.getId();
         HandcartManager.Handcart handcart = HandcartManager.getHandcart(id);
+
         if (handcart == null)  return;
 
         World world = player.level;
-
         Minecraft minecraft = Minecraft.getInstance();
         EntityRendererManager entityRendererManager = minecraft.getEntityRenderDispatcher();
         EntityRenderer<? super Entity> entityRenderer = entityRendererManager.getRenderer(player);
@@ -44,18 +45,22 @@ public class HandcartRenderer {
         Vector3d position = state.position;
         int light = WorldRenderer.getLightColor(world, new BlockPos(position.x, position.y, position.z));
         renderHandcart(state, matrixStack, renderBuffer, light);
+        // Render handcart's shadow
         renderShadow(position, matrixStack, renderBuffer);
 
         matrixStack.popPose();
     }
 
+    // Render handcart in first person view
     public void renderHandcartFP(float partialTick, MatrixStack matrixStack) {
         Minecraft minecraft = Minecraft.getInstance();
         ClientPlayerEntity player = minecraft.player;
+
         if (player == null) return;
 
         int id = player.getId();
         HandcartManager.Handcart handcart = HandcartManager.getHandcart(id);
+
         if (handcart == null)  return;
 
         World world = player.level;
@@ -83,6 +88,7 @@ public class HandcartRenderer {
 
         matrixStack.pushPose();
 
+        // Render handcart model
         matrixStack.translate(position.x, position.y, position.z);
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(rotation));
         matrixStack.scale(1.5F, 1.5F, 1.5F);
@@ -93,14 +99,12 @@ public class HandcartRenderer {
     }
 
     private void renderShadow(Vector3d handcartPosition, MatrixStack matrixStack, IRenderTypeBuffer renderBuffer){
-        matrixStack.pushPose();
-
         Minecraft minecraft = Minecraft.getInstance();
         ClientPlayerEntity player = minecraft.player;
 
         if (player == null) return;
 
-        World world = player.level;
+        // Calculate shadow strength
         GameRenderer gameRenderer = minecraft.gameRenderer;
         ActiveRenderInfo mainCamera = gameRenderer.getMainCamera();
         Vector3d cameraPosition = mainCamera.getPosition();
@@ -109,6 +113,7 @@ public class HandcartRenderer {
 
         if (shadowStrength <= 0) return;
 
+        // Calculate area to render shadow
         int minX = MathHelper.floor(handcartPosition.x - (double) SHADOW_RADIUS);
         int maxX = MathHelper.floor(handcartPosition.x + (double) SHADOW_RADIUS);
         int minY = MathHelper.floor(handcartPosition.y - (double) SHADOW_RADIUS);
@@ -116,9 +121,13 @@ public class HandcartRenderer {
         int minZ = MathHelper.floor(handcartPosition.z - (double) SHADOW_RADIUS);
         int maxZ = MathHelper.floor(handcartPosition.z + (double) SHADOW_RADIUS);
 
-        matrixStack.translate(handcartPosition.x, handcartPosition.y, handcartPosition.z);
-        MatrixStack.Entry matrixEntry = matrixStack.last();
         IVertexBuilder vertexBuilder = renderBuffer.getBuffer(SHADOW_RENDER_TYPE);
+        World world = player.level;
+
+        matrixStack.pushPose();
+        matrixStack.translate(handcartPosition.x, handcartPosition.y, handcartPosition.z);
+
+        MatrixStack.Entry matrixEntry = matrixStack.last();
 
         for(BlockPos blockPos : BlockPos.betweenClosed(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ))) {
             EntityRendererManager.renderBlockShadow(matrixEntry, vertexBuilder, world, blockPos, handcartPosition.x, handcartPosition.y, handcartPosition.z, SHADOW_RADIUS, shadowStrength);
