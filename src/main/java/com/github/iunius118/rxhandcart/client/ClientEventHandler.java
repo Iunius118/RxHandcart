@@ -41,8 +41,4 @@ public class ClientEventHandler {
             handcartRenderer.renderHandcartFP(event.getPartialTicks(), event.getMatrixStack());
         }
     }
-
-
-
-
 }

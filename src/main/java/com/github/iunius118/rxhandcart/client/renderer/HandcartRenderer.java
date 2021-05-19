@@ -72,6 +72,7 @@ public class HandcartRenderer {
 
         matrixStack.translate(position.x, position.y, position.z);
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(rotation));
+        matrixStack.scale(1.5F, 1.5F, 1.5F);
         IVertexBuilder vertexBuilder = renderBuffer.getBuffer(RenderType.entityCutoutNoCull(texture));
         model.render(matrixStack, vertexBuilder, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
