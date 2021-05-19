@@ -2,6 +2,7 @@ package com.github.iunius118.rxhandcart.client;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -65,25 +66,35 @@ public class HandcartManager {
             double posX;
             double posZ;
             float rot;
+            float distance = 1.2F;
 
             if (ownerHorizontalMotion.lengthSqr() < 0.0001) {
                 // Owner is almost stopped
-                rot = -owner.getViewYRot(partialTick);
+                rot = -getBodyRotation(owner, partialTick);
                 float dx = MathHelper.sin(rot * ((float) Math.PI / 180F) - (float) Math.PI);
                 float dz = MathHelper.cos(rot * ((float) Math.PI / 180F) - (float) Math.PI);
-                posX = ownerPos.x + dx;
-                posZ = ownerPos.z + dz;
+                posX = ownerPos.x + dx * distance;
+                posZ = ownerPos.z + dz * distance;
 
              } else {
                 // Owner is moving
                 Vector3d d = ownerHorizontalMotion.normalize();
-                posX = ownerPos.x - d.x;
-                posZ = ownerPos.z - d.z;
+                posX = ownerPos.x - d.x * distance;
+                posZ = ownerPos.z - d.z * distance;
                 rot = (float) (Math.atan2(d.x, d.z) * (double) (180F / (float) Math.PI));
             }
 
             double posY = getPositionY(owner.level, new BlockPos(posX, ownerPos.y, posZ));
             return new HandcartState(new Vector3d(posX, posY, posZ), rot);
+        }
+
+        private float getBodyRotation(Entity entity, float partialTick) {
+            if (entity instanceof LivingEntity) {
+                LivingEntity livingEntity = (LivingEntity) entity;
+                return partialTick == 1.0F ? livingEntity.yBodyRot : MathHelper.lerp(partialTick, livingEntity.yBodyRotO, livingEntity.yBodyRot);
+            } else {
+                return entity.getViewYRot(partialTick);
+            }
         }
 
         private double getPositionY(World world, BlockPos pos) {
