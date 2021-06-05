@@ -8,9 +8,13 @@ import com.github.iunius118.rxhandcart.data.ModItemModelProvider;
 import com.github.iunius118.rxhandcart.data.ModLanguageProviders;
 import com.github.iunius118.rxhandcart.data.ModRecipeProvider;
 import com.github.iunius118.rxhandcart.item.HandcartItem;
+import com.github.iunius118.rxhandcart.item.HandcartSettingItem;
+import com.github.iunius118.rxhandcart.network.ChangeCartMessage;
+import com.github.iunius118.rxhandcart.network.NetworkHandler;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.ResourceLocation;
@@ -27,16 +31,22 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 
 @Mod(RxHandcart.MOD_ID)
 public class RxHandcart {
     public static final String MOD_ID = "rxhandcart";
     public static final Logger LOGGER = LogManager.getLogger();
     public static final ResourceLocation HANDCART_KEY = new ResourceLocation(MOD_ID, "handcart");
+
+    // Init network channels
+    public static final NetworkHandler NETWORK_HANDLER = new NetworkHandler();
 
     public RxHandcart() {
         // Register lifecycle event listeners
@@ -69,12 +79,13 @@ public class RxHandcart {
 
     @SubscribeEvent
     public void onPlayerClone(PlayerEvent.Clone event) {
-        if (!event.isWasDeath()) return;    // Return from End
-
-        // Copy old capability's stacks to new capability when player respawn
-        PlayerEntity oldPlayer = event.getOriginal();
         PlayerEntity newPlayer = event.getPlayer();
-        cloneHandcartHandler(oldPlayer, newPlayer);
+        PlayerEntity oldPlayer = event.getOriginal();
+
+        if (event.isWasDeath()) {
+            // Copy old capability data to new capability when player has respawned
+            cloneHandcartHandler(oldPlayer, newPlayer);
+        }
     }
 
     private void cloneHandcartHandler(PlayerEntity oldPlayer, PlayerEntity newPlayer){
@@ -83,8 +94,69 @@ public class RxHandcart {
         Optional<IHandcartHandler> newHandlerOptional = newPlayer.getCapability(capability).resolve();
 
         if (oldHandlerOptional.isPresent() && newHandlerOptional.isPresent()) {
-            newHandlerOptional.get().cloneStacksFrom(oldHandlerOptional.get());
+            newHandlerOptional.get().cloneFrom(oldHandlerOptional.get());
         }
+    }
+
+    @SubscribeEvent
+    public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        PlayerEntity player = event.getPlayer();
+        if (!(player instanceof ServerPlayerEntity)) return;
+
+        ServerPlayerEntity owner = (ServerPlayerEntity) player;
+        OptionalInt type = getHandcartType(owner);
+        if (!type.isPresent()) return;
+
+        sendChangeCartPacket(owner, type.getAsInt(), owner);
+    }
+
+    @SubscribeEvent
+    public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        PlayerEntity player = event.getPlayer();
+        if (!(player instanceof ServerPlayerEntity)) return;
+
+        ServerPlayerEntity owner = (ServerPlayerEntity) player;
+        OptionalInt type = getHandcartType(owner);
+        if (!type.isPresent()) return;
+
+        sendChangeCartPacket(owner, type.getAsInt(), owner);
+    }
+
+    @SubscribeEvent
+    public void onStartTracking(PlayerEvent.StartTracking event) {
+        PlayerEntity player = event.getPlayer();
+        if (!(player instanceof ServerPlayerEntity)) return;
+
+        ServerPlayerEntity receiver = (ServerPlayerEntity) player;
+        Entity owner = event.getTarget();
+        if (!(owner instanceof PlayerEntity)) return;
+
+        OptionalInt type = getHandcartType(owner);
+        if (!type.isPresent()) return;
+
+        sendChangeCartPacket(owner, type.getAsInt(), receiver);
+    }
+
+    public static OptionalInt getHandcartType(Entity owner) {
+        Optional<IHandcartHandler> capability = owner.getCapability(ModCapabilities.HANDCART_HANDLER_CAPABILITY).resolve();
+        if (!capability.isPresent()) return OptionalInt.empty();
+
+        IHandcartHandler handcartHandler = capability.get();
+        return OptionalInt.of(handcartHandler.getType());
+    }
+
+    public static void sendChangeCartPacket(Entity owner, int type, ServerPlayerEntity receiver) {
+        SimpleChannel changeCartChannel = NETWORK_HANDLER.getChangeCartChannel();
+        PacketDistributor.PacketTarget target = PacketDistributor.PLAYER.with(() -> receiver);
+        ChangeCartMessage message = new ChangeCartMessage(owner, type);
+        changeCartChannel.send(target, message);
+    }
+
+    public static void broadcastChangeCartPacket(Entity owner, int type) {
+        SimpleChannel changeCartChannel = NETWORK_HANDLER.getChangeCartChannel();
+        PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> owner);
+        ChangeCartMessage message = new ChangeCartMessage(owner, type);
+        changeCartChannel.send(target, message);
     }
 
     @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
