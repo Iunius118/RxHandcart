@@ -2,9 +2,7 @@ package com.github.iunius118.rxhandcart.item;
 
 import com.github.iunius118.rxhandcart.capability.IHandcartHandler;
 import com.github.iunius118.rxhandcart.capability.ModCapabilities;
-import com.github.iunius118.rxhandcart.client.HandcartManager;
 import com.github.iunius118.rxhandcart.inventory.HandcartInventory;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.ChestContainer;
@@ -26,18 +24,6 @@ public class HandcartItem extends Item {
 
     public HandcartItem(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-        if (world.isClientSide && stack.getItem() instanceof HandcartItem) {
-            // Update handcarts on client-side world for rendering
-            updateHandcart(entity);
-        }
-    }
-
-    private void updateHandcart(Entity entity) {
-        HandcartManager.addHandcart(entity);
     }
 
     @Override

@@ -6,14 +6,22 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class HandcartHandlerStorage implements Capability.IStorage<IHandcartHandler> {
+    public final static String KET_TYPE = "Type";
     public final static String KET_INV = "Inv";
     public final static String KET_INV_SLOT = "Slot";
 
     @Override
     public INBT writeNBT(Capability<IHandcartHandler> capability, IHandcartHandler instance, Direction side) {
+        CompoundNBT tag = new CompoundNBT();
+
+        // Save type to NBT
+        tag.putInt(KET_TYPE, instance.getType());
+
+        // Save item stacks to NBT
         ItemStackHandler itemHandler = instance.getItemHandler();
         ListNBT nbtTagList = new ListNBT();
         int size = itemHandler.getSlots();
@@ -29,7 +37,6 @@ public class HandcartHandlerStorage implements Capability.IStorage<IHandcartHand
             }
         }
 
-        CompoundNBT tag = new CompoundNBT();
         tag.put(KET_INV, nbtTagList);
 
         return tag;
@@ -41,6 +48,14 @@ public class HandcartHandlerStorage implements Capability.IStorage<IHandcartHand
 
         CompoundNBT tag = (CompoundNBT) base;
 
+        // Load type from NBT
+        if (tag.contains(KET_TYPE, Constants.NBT.TAG_INT)) {
+            instance.setType(tag.getInt(KET_TYPE));
+        } else {
+            instance.setType(HandcartHandler.INVISIBLE_TYPE);
+        }
+
+        // Load item stacks from NBT
         ListNBT tagList = (ListNBT) tag.get(KET_INV);
 
         if (tagList != null) {

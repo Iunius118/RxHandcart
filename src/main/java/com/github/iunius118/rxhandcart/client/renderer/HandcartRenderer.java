@@ -1,6 +1,5 @@
 package com.github.iunius118.rxhandcart.client.renderer;
 
-import com.github.iunius118.rxhandcart.client.HandcartManager;
 import com.github.iunius118.rxhandcart.client.HandcartState;
 import com.github.iunius118.rxhandcart.client.model.IHandcartModel;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -20,17 +19,18 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 
+import java.util.Optional;
+
 public class HandcartRenderer {
     private static final RenderType SHADOW_RENDER_TYPE = RenderType.entityShadow(new ResourceLocation("textures/misc/shadow.png"));
     private static final float SHADOW_RADIUS = 0.75F;
 
     // Render handcarts in third person view
     public void renderHandcartTP(PlayerEntity player, float partialTick, MatrixStack matrixStack, IRenderTypeBuffer renderBuffer) {
-        int id = player.getId();
-        HandcartManager.Handcart handcart = HandcartManager.getHandcart(id);
+        Optional<HandcartState> stateOptional = HandcartState.of(player, partialTick);
+        if (!stateOptional.isPresent()) return;
 
-        if (handcart == null)  return;
-
+        HandcartState state = stateOptional.get();
         World world = player.level;
         Minecraft minecraft = Minecraft.getInstance();
         EntityRendererManager entityRendererManager = minecraft.getEntityRenderDispatcher();
@@ -41,7 +41,6 @@ public class HandcartRenderer {
         matrixStack.pushPose();
         matrixStack.translate(-playerRenderPosition.x, -playerRenderPosition.y, -playerRenderPosition.z);
 
-        HandcartState state = handcart.getHandcartState(partialTick);
         Vector3d position = state.position;
         int light = WorldRenderer.getLightColor(world, new BlockPos(position.x, position.y, position.z));
         renderHandcart(state, matrixStack, renderBuffer, light);
@@ -55,14 +54,12 @@ public class HandcartRenderer {
     public void renderHandcartFP(float partialTick, MatrixStack matrixStack) {
         Minecraft minecraft = Minecraft.getInstance();
         ClientPlayerEntity player = minecraft.player;
-
         if (player == null) return;
 
-        int id = player.getId();
-        HandcartManager.Handcart handcart = HandcartManager.getHandcart(id);
+        Optional<HandcartState> stateOptional = HandcartState.of(player, partialTick);
+        if (!stateOptional.isPresent()) return;
 
-        if (handcart == null)  return;
-
+        HandcartState state = stateOptional.get();
         World world = player.level;
         GameRenderer gameRenderer = minecraft.gameRenderer;
         ActiveRenderInfo mainCamera = gameRenderer.getMainCamera();
@@ -72,7 +69,6 @@ public class HandcartRenderer {
         matrixStack.pushPose();
         matrixStack.translate(-cameraPosition.x, -cameraPosition.y, -cameraPosition.z);
 
-        HandcartState state = handcart.getHandcartState(partialTick);
         Vector3d position = state.position;
         int light = WorldRenderer.getLightColor(world, new BlockPos(position.x, position.y, position.z));
         renderHandcart(state, matrixStack, renderBuffer, light);
