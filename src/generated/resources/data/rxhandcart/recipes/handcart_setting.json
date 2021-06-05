@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "rxhandcart:handcart_setting",
+  "ingredients": [
+    {
+      "item": "rxhandcart:handcart"
+    }
+  ],
+  "result": {
+    "item": "rxhandcart:handcart_setting"
+  }
+}

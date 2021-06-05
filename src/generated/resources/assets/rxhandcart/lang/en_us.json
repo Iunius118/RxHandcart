@@ -1,4 +1,5 @@
 {
   "container.rxhandcart.handcart": "Handcart",
-  "item.rxhandcart.handcart": "Handcart"
+  "item.rxhandcart.handcart": "Handcart",
+  "item.rxhandcart.handcart_setting": "Switching Visibility of Handcart"
 }

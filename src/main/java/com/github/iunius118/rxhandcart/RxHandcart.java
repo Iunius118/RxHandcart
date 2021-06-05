@@ -164,7 +164,8 @@ public class RxHandcart {
         @SubscribeEvent
         public static void onItemRegistry(final RegistryEvent.Register<Item> itemRegistryEvent) {
             itemRegistryEvent.getRegistry().registerAll(
-                    new HandcartItem(new Item.Properties().tab(ItemGroup.TAB_MISC)).setRegistryName("handcart")
+                    new HandcartItem(new Item.Properties().tab(ItemGroup.TAB_MISC)).setRegistryName("handcart"),
+                    new HandcartSettingItem(new Item.Properties().tab(ItemGroup.TAB_MISC), 1).setRegistryName("handcart_setting")
             );
         }
 

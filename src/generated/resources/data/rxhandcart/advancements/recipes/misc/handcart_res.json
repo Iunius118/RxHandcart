@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "rxhandcart:handcart_res"
+    ]
+  },
+  "criteria": {
+    "has_handcart": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "rxhandcart:handcart"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "rxhandcart:handcart_res"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_handcart",
+      "has_the_recipe"
+    ]
+  ]
+}

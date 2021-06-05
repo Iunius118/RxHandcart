@@ -15,6 +15,7 @@ public class ModItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         registerSingleTextureModel(ModItems.HANDCART);
+        registerSingleTextureModel(ModItems.HANDCART_SETTING);
     }
 
     private void registerSingleTextureModel(Item item) {

@@ -7,4 +7,5 @@ import net.minecraftforge.registries.ObjectHolder;
 @ObjectHolder(RxHandcart.MOD_ID)
 public class ModItems {
     public static final Item HANDCART = null;
+    public static final Item HANDCART_SETTING = null;
 }

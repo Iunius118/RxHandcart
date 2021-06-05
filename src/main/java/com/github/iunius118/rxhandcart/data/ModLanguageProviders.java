@@ -19,6 +19,8 @@ public class ModLanguageProviders {
         @Override
         protected void addTranslations() {
             add(ModItems.HANDCART, "Handcart");
+            add(ModItems.HANDCART_SETTING, "Switching Visibility of Handcart");
+
             add("container.rxhandcart.handcart", "Handcart");
         }
     }
@@ -31,6 +33,8 @@ public class ModLanguageProviders {
         @Override
         protected void addTranslations() {
             add(ModItems.HANDCART, "荷車");
+            add(ModItems.HANDCART_SETTING, "荷車の表示切替");
+
             add("container.rxhandcart.handcart", "荷車");
         }
     }
