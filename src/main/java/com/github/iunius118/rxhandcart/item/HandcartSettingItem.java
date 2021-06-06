@@ -53,7 +53,7 @@ public class HandcartSettingItem extends Item {
         handcartHandler.setType(newType);
         // Update visibility of handcart in each client
         RxHandcart.broadcastChangeCartPacket(player, newType);
-        // Ass cool-down time
+        // Add cool-down time
         CooldownTracker cooldownTracker = player.getCooldowns();
         cooldownTracker.addCooldown(this, getCoolDownTime());
     }
