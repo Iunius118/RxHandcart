@@ -5,6 +5,9 @@
 # Exclude source
 !/src/
 
+# Exclude docs
+!/docs/
+
 # Gradle
 !/gradle/
 !gradle.properties
