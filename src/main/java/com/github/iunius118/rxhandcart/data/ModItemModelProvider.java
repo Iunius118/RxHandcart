@@ -19,9 +19,6 @@ public class ModItemModelProvider extends ItemModelProvider {
     }
 
     private void registerSingleTextureModel(Item item) {
-        if (item == null) return;
-        if (item.getRegistryName() == null) return;
-
         String itemPath = item.getRegistryName().getPath();
         singleTexture(itemPath, mcLoc("item/generated"), "layer0", modLoc("item/" + itemPath));
     }
