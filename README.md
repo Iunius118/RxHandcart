@@ -12,6 +12,8 @@ RxHandcartはMinecraftの世界にHandcart（荷車）を追加するmodです�
 
 ### Requirements
 
+- Minecraft 1.17.1
+  - Minecraft Forge 1.17.1-37.0.15+
 - Minecraft 1.16.5
   - Minecraft Forge 1.16.5-36.1.0+
 

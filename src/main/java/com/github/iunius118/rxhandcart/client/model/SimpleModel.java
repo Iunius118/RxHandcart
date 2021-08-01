@@ -1,10 +1,10 @@
 package com.github.iunius118.rxhandcart.client.model;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.math.vector.Vector4f;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
+import net.minecraft.world.phys.Vec2;
 
 import java.util.List;
 
@@ -12,10 +12,10 @@ public class SimpleModel {
     public static class SimpleVertex {
         public final Vector3f pos;
         public final Vector4f color;
-        public final Vector2f uv;
+        public final Vec2 uv;
         public final Vector3f normal;
 
-        public SimpleVertex(Vector3f posXYZ, Vector4f colorRGBA, Vector2f texUV, Vector3f normalXYZ) {
+        public SimpleVertex(Vector3f posXYZ, Vector4f colorRGBA, Vec2 texUV, Vector3f normalXYZ) {
             pos = posXYZ;
             color = colorRGBA;
             uv = texUV;
@@ -31,20 +31,20 @@ public class SimpleModel {
             this.vertices = new SimpleVertex[]{vertex1, vertex2, vertex3, vertex4};
         }
 
-        public SimpleQuad(Vector3f posXYZ1, Vector4f colorRGBA1, Vector2f texUV1, Vector3f normalXYZ1,
-                          Vector3f posXYZ2, Vector4f colorRGBA2, Vector2f texUV2, Vector3f normalXYZ2,
-                          Vector3f posXYZ3, Vector4f colorRGBA3, Vector2f texUV3, Vector3f normalXYZ3,
-                          Vector3f posXYZ4, Vector4f colorRGBA4, Vector2f texUV4, Vector3f normalXYZ4) {
+        public SimpleQuad(Vector3f posXYZ1, Vector4f colorRGBA1, Vec2 texUV1, Vector3f normalXYZ1,
+                          Vector3f posXYZ2, Vector4f colorRGBA2, Vec2 texUV2, Vector3f normalXYZ2,
+                          Vector3f posXYZ3, Vector4f colorRGBA3, Vec2 texUV3, Vector3f normalXYZ3,
+                          Vector3f posXYZ4, Vector4f colorRGBA4, Vec2 texUV4, Vector3f normalXYZ4) {
             this(new SimpleVertex(posXYZ1, colorRGBA1, texUV1, normalXYZ1),
                     new SimpleVertex(posXYZ2, colorRGBA2, texUV2, normalXYZ2),
                     new SimpleVertex(posXYZ3, colorRGBA3, texUV3, normalXYZ3),
                     new SimpleVertex(posXYZ4, colorRGBA4, texUV4, normalXYZ4));
         }
 
-        public SimpleQuad(Vector3f posXYZ1, Vector4f colorRGBA1, Vector2f texUV1,
-                          Vector3f posXYZ2, Vector4f colorRGBA2, Vector2f texUV2,
-                          Vector3f posXYZ3, Vector4f colorRGBA3, Vector2f texUV3,
-                          Vector3f posXYZ4, Vector4f colorRGBA4, Vector2f texUV4,
+        public SimpleQuad(Vector3f posXYZ1, Vector4f colorRGBA1, Vec2 texUV1,
+                          Vector3f posXYZ2, Vector4f colorRGBA2, Vec2 texUV2,
+                          Vector3f posXYZ3, Vector4f colorRGBA3, Vec2 texUV3,
+                          Vector3f posXYZ4, Vector4f colorRGBA4, Vec2 texUV4,
                           Vector3f normalXYZ) {
             this(new SimpleVertex(posXYZ1, colorRGBA1, texUV1, normalXYZ),
                     new SimpleVertex(posXYZ2, colorRGBA2, texUV2, normalXYZ),
@@ -52,10 +52,10 @@ public class SimpleModel {
                     new SimpleVertex(posXYZ4, colorRGBA4, texUV4, normalXYZ));
         }
 
-        public SimpleQuad(Vector3f posXYZ1, Vector2f texUV1,
-                          Vector3f posXYZ2, Vector2f texUV2,
-                          Vector3f posXYZ3, Vector2f texUV3,
-                          Vector3f posXYZ4, Vector2f texUV4,
+        public SimpleQuad(Vector3f posXYZ1, Vec2 texUV1,
+                          Vector3f posXYZ2, Vec2 texUV2,
+                          Vector3f posXYZ3, Vec2 texUV3,
+                          Vector3f posXYZ4, Vec2 texUV4,
                           Vector4f colorRGBA, Vector3f normalXYZ) {
             this(new SimpleVertex(posXYZ1, colorRGBA, texUV1, normalXYZ),
                     new SimpleVertex(posXYZ2, colorRGBA, texUV2, normalXYZ),
@@ -63,10 +63,10 @@ public class SimpleModel {
                     new SimpleVertex(posXYZ4, colorRGBA, texUV4, normalXYZ));
         }
 
-        public SimpleQuad(Vector3f posXYZ1, Vector2f texUV1,
-                          Vector3f posXYZ2, Vector2f texUV2,
-                          Vector3f posXYZ3, Vector2f texUV3,
-                          Vector3f posXYZ4, Vector2f texUV4,
+        public SimpleQuad(Vector3f posXYZ1, Vec2 texUV1,
+                          Vector3f posXYZ2, Vec2 texUV2,
+                          Vector3f posXYZ3, Vec2 texUV3,
+                          Vector3f posXYZ4, Vec2 texUV4,
                           Vector3f normalXYZ) {
             this(new SimpleVertex(posXYZ1, COLOR_WHITE, texUV1, normalXYZ),
                     new SimpleVertex(posXYZ2, COLOR_WHITE, texUV2, normalXYZ),
@@ -79,7 +79,7 @@ public class SimpleModel {
         }
     }
 
-    protected void renderQuads(MatrixStack matrixStack, IVertexBuilder buffer, List<SimpleQuad> quads, int color, int lightmapCoord, int overlayColor) {
+    protected void renderQuads(PoseStack matrixStack, VertexConsumer buffer, List<SimpleQuad> quads, int color, int lightmapCoord, int overlayColor) {
         float alpha = (float)(color >>> 24 & 255) / 255.0F;
         float red   = (float)(color >>> 16 & 255) / 255.0F;
         float green = (float)(color >>> 8 & 255) / 255.0F;
@@ -87,8 +87,8 @@ public class SimpleModel {
         renderQuads(matrixStack, buffer, quads, lightmapCoord, overlayColor, red, green, blue, alpha);
     }
 
-    protected void renderQuads(MatrixStack matrixStack, IVertexBuilder buffer, List<SimpleQuad> quads, int lightmapCoord, int overlayColor, float red, float green, float blue, float alpha) {
-        MatrixStack.Entry matrixEntry = matrixStack.last();
+    protected void renderQuads(PoseStack matrixStack, VertexConsumer buffer, List<SimpleQuad> quads, int lightmapCoord, int overlayColor, float red, float green, float blue, float alpha) {
+        PoseStack.Pose matrixEntry = matrixStack.last();
 
         for (SimpleQuad face : quads) {
             for (int i = 0; i < 4; i++) {
@@ -98,7 +98,7 @@ public class SimpleModel {
                 pos.transform(matrixEntry.pose());
 
                 Vector4f vColor = vertex.color;
-                Vector2f uv = vertex.uv;
+                Vec2 uv = vertex.uv;
 
                 Vector3f normal = vertex.normal.copy();
                 normal.transform(matrixEntry.normal());

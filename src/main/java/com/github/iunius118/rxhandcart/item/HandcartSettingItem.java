@@ -4,13 +4,13 @@ import com.github.iunius118.rxhandcart.RxHandcart;
 import com.github.iunius118.rxhandcart.capability.HandcartHandler;
 import com.github.iunius118.rxhandcart.capability.IHandcartHandler;
 import com.github.iunius118.rxhandcart.capability.ModCapabilities;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.CooldownTracker;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemCooldowns;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 
@@ -25,18 +25,18 @@ public class HandcartSettingItem extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
         if (world.isClientSide) {
-            return ActionResult.success(stack);
+            return InteractionResultHolder.success(stack);
         } else {
             switchHandcartType(player);
-            return ActionResult.consume(stack);
+            return InteractionResultHolder.consume(stack);
         }
     }
 
-    private void switchHandcartType(PlayerEntity player) {
+    private void switchHandcartType(Player player) {
         Optional<IHandcartHandler> capability = player.getCapability(ModCapabilities.HANDCART_HANDLER_CAPABILITY).resolve();
         if (!capability.isPresent()) return;
 
@@ -54,7 +54,7 @@ public class HandcartSettingItem extends Item {
         // Update visibility of handcart in each client
         RxHandcart.broadcastChangeCartPacket(player, newType);
         // Add cool-down time
-        CooldownTracker cooldownTracker = player.getCooldowns();
+        ItemCooldowns cooldownTracker = player.getCooldowns();
         cooldownTracker.addCooldown(this, getCoolDownTime());
     }
 

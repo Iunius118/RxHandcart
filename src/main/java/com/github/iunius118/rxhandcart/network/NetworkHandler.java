@@ -1,9 +1,9 @@
 package com.github.iunius118.rxhandcart.network;
 
 import com.github.iunius118.rxhandcart.RxHandcart;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.fmllegacy.network.NetworkRegistry;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 
 public class NetworkHandler {
     private static final String NETWORK_VERSION = "RHCv1";

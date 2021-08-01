@@ -1,7 +1,7 @@
 package com.github.iunius118.rxhandcart.capability;
 
 import com.github.iunius118.rxhandcart.inventory.HandcartInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;

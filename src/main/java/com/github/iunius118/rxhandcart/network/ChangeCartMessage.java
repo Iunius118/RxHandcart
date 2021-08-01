@@ -3,11 +3,11 @@ package com.github.iunius118.rxhandcart.network;
 import com.github.iunius118.rxhandcart.capability.IHandcartHandler;
 import com.github.iunius118.rxhandcart.capability.ModCapabilities;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -26,12 +26,12 @@ public class ChangeCartMessage {
         handcartType = type;
     }
 
-    public static void encode(ChangeCartMessage msg, PacketBuffer buf) {
+    public static void encode(ChangeCartMessage msg, FriendlyByteBuf buf) {
         buf.writeInt(msg.entityId);
         buf.writeInt(msg.handcartType);
     }
 
-    public static ChangeCartMessage decode(PacketBuffer buf) {
+    public static ChangeCartMessage decode(FriendlyByteBuf buf) {
         int entityId = buf.readInt();
         int handcartType = buf.readInt();
         return new ChangeCartMessage(entityId, handcartType);
@@ -46,7 +46,7 @@ public class ChangeCartMessage {
         if (FMLLoader.getDist().isDedicatedServer()) return;
         // Only in client
 
-        ClientWorld level = Minecraft.getInstance().level;
+        ClientLevel level = Minecraft.getInstance().level;
         if (level == null) return;
 
         Entity entity = level.getEntity(msg.entityId);
