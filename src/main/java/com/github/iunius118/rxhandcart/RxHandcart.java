@@ -12,12 +12,12 @@ import com.github.iunius118.rxhandcart.item.HandcartSettingItem;
 import com.github.iunius118.rxhandcart.network.ChangeCartMessage;
 import com.github.iunius118.rxhandcart.network.NetworkHandler;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -28,11 +28,11 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -71,7 +71,7 @@ public class RxHandcart {
     public void onAttachCapabilityEventEntity(AttachCapabilitiesEvent<Entity> event) {
         Entity entity = event.getObject();
 
-        if(entity instanceof PlayerEntity) {
+        if(entity instanceof Player) {
             // Add Handcart capability to players
             event.addCapability(HANDCART_KEY, new HandcartHandlerCapability.Provider());
         }
@@ -79,8 +79,8 @@ public class RxHandcart {
 
     @SubscribeEvent
     public void onPlayerClone(PlayerEvent.Clone event) {
-        PlayerEntity newPlayer = event.getPlayer();
-        PlayerEntity oldPlayer = event.getOriginal();
+        Player newPlayer = event.getPlayer();
+        Player oldPlayer = event.getOriginal();
 
         if (event.isWasDeath()) {
             // Copy old capability data to new capability when player has respawned
@@ -88,7 +88,7 @@ public class RxHandcart {
         }
     }
 
-    private void cloneHandcartHandler(PlayerEntity oldPlayer, PlayerEntity newPlayer){
+    private void cloneHandcartHandler(Player oldPlayer, Player newPlayer){
         Capability<IHandcartHandler> capability = ModCapabilities.HANDCART_HANDLER_CAPABILITY;
         Optional<IHandcartHandler> oldHandlerOptional = oldPlayer.getCapability(capability).resolve();
         Optional<IHandcartHandler> newHandlerOptional = newPlayer.getCapability(capability).resolve();
@@ -100,10 +100,10 @@ public class RxHandcart {
 
     @SubscribeEvent
     public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        PlayerEntity player = event.getPlayer();
-        if (!(player instanceof ServerPlayerEntity)) return;
+        Player player = event.getPlayer();
+        if (!(player instanceof ServerPlayer)) return;
 
-        ServerPlayerEntity owner = (ServerPlayerEntity) player;
+        ServerPlayer owner = (ServerPlayer) player;
         OptionalInt type = getHandcartType(owner);
         if (!type.isPresent()) return;
 
@@ -112,10 +112,10 @@ public class RxHandcart {
 
     @SubscribeEvent
     public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        PlayerEntity player = event.getPlayer();
-        if (!(player instanceof ServerPlayerEntity)) return;
+        Player player = event.getPlayer();
+        if (!(player instanceof ServerPlayer)) return;
 
-        ServerPlayerEntity owner = (ServerPlayerEntity) player;
+        ServerPlayer owner = (ServerPlayer) player;
         OptionalInt type = getHandcartType(owner);
         if (!type.isPresent()) return;
 
@@ -124,12 +124,12 @@ public class RxHandcart {
 
     @SubscribeEvent
     public void onStartTracking(PlayerEvent.StartTracking event) {
-        PlayerEntity player = event.getPlayer();
-        if (!(player instanceof ServerPlayerEntity)) return;
+        Player player = event.getPlayer();
+        if (!(player instanceof ServerPlayer)) return;
 
-        ServerPlayerEntity receiver = (ServerPlayerEntity) player;
+        ServerPlayer receiver = (ServerPlayer) player;
         Entity owner = event.getTarget();
-        if (!(owner instanceof PlayerEntity)) return;
+        if (!(owner instanceof Player)) return;
 
         OptionalInt type = getHandcartType(owner);
         if (!type.isPresent()) return;
@@ -145,7 +145,7 @@ public class RxHandcart {
         return OptionalInt.of(handcartHandler.getType());
     }
 
-    public static void sendChangeCartPacket(Entity owner, int type, ServerPlayerEntity receiver) {
+    public static void sendChangeCartPacket(Entity owner, int type, ServerPlayer receiver) {
         SimpleChannel changeCartChannel = NETWORK_HANDLER.getChangeCartChannel();
         PacketDistributor.PacketTarget target = PacketDistributor.PLAYER.with(() -> receiver);
         ChangeCartMessage message = new ChangeCartMessage(owner, type);
@@ -164,8 +164,8 @@ public class RxHandcart {
         @SubscribeEvent
         public static void onItemRegistry(final RegistryEvent.Register<Item> itemRegistryEvent) {
             itemRegistryEvent.getRegistry().registerAll(
-                    new HandcartItem(new Item.Properties().tab(ItemGroup.TAB_MISC)).setRegistryName("handcart"),
-                    new HandcartSettingItem(new Item.Properties().tab(ItemGroup.TAB_MISC), 1).setRegistryName("handcart_setting")
+                    new HandcartItem(new Item.Properties().tab(CreativeModeTab.TAB_MISC)).setRegistryName("handcart"),
+                    new HandcartSettingItem(new Item.Properties().tab(CreativeModeTab.TAB_MISC), 1).setRegistryName("handcart_setting")
             );
         }
 

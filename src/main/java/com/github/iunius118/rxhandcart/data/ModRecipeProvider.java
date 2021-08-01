@@ -1,10 +1,14 @@
 package com.github.iunius118.rxhandcart.data;
 
 import com.github.iunius118.rxhandcart.item.ModItems;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.*;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 
@@ -16,7 +20,7 @@ public class ModRecipeProvider  extends RecipeProvider implements IConditionBuil
     }
 
     @Override
-    protected void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
+    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
         ResourceLocation handcartRegistryName = ModItems.HANDCART.getRegistryName();
         ShapedRecipeBuilder.shaped(ModItems.HANDCART)
                 .group(handcartRegistryName.toString())

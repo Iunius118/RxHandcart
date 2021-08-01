@@ -2,7 +2,7 @@ package com.github.iunius118.rxhandcart.client;
 
 import com.github.iunius118.rxhandcart.client.model.HandcartModel;
 import com.github.iunius118.rxhandcart.client.model.IHandcartModel;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
 

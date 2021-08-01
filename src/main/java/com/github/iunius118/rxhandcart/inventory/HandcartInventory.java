@@ -1,11 +1,11 @@
 package com.github.iunius118.rxhandcart.inventory;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class HandcartInventory implements IInventory {
+public class HandcartInventory implements Container {
     public final static int SIZE = 27;
     private final ItemStackHandler itemStackHandler;
 
@@ -63,7 +63,7 @@ public class HandcartInventory implements IInventory {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         return true;
     }
 
