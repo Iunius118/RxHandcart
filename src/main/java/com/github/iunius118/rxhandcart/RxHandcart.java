@@ -107,6 +107,7 @@ public class RxHandcart {
         OptionalInt type = getHandcartType(owner);
         if (!type.isPresent()) return;
 
+        // Send cart type of logged in player to their client
         sendChangeCartPacket(owner, type.getAsInt(), owner);
     }
 
@@ -119,6 +120,7 @@ public class RxHandcart {
         OptionalInt type = getHandcartType(owner);
         if (!type.isPresent()) return;
 
+        // Send cart type of respawned player to their client
         sendChangeCartPacket(owner, type.getAsInt(), owner);
     }
 
@@ -134,6 +136,7 @@ public class RxHandcart {
         OptionalInt type = getHandcartType(owner);
         if (!type.isPresent()) return;
 
+        // Send cart type of owner to client of other player who appeared around owner
         sendChangeCartPacket(owner, type.getAsInt(), receiver);
     }
 
