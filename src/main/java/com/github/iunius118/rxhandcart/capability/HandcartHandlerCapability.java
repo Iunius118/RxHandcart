@@ -6,9 +6,8 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -16,8 +15,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class HandcartHandlerCapability {
-    public static void register() {
-        CapabilityManager.INSTANCE.register(IHandcartHandler.class);
+    public static void register(RegisterCapabilitiesEvent event) {
+        event.register(IHandcartHandler.class);
     }
 
     public static class Provider implements ICapabilitySerializable<Tag> {
@@ -80,7 +79,7 @@ public class HandcartHandlerCapability {
             CompoundTag tag = (CompoundTag) base;
 
             // Load type from NBT
-            if (tag.contains(KET_TYPE, Constants.NBT.TAG_INT)) {
+            if (tag.contains(KET_TYPE, Tag.TAG_INT)) {
                 instance.setType(tag.getInt(KET_TYPE));
             } else {
                 instance.setType(HandcartHandler.INVISIBLE_TYPE);

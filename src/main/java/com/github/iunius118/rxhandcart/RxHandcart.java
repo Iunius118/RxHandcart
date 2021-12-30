@@ -20,6 +20,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -27,12 +28,11 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
-import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -51,7 +51,6 @@ public class RxHandcart {
     public RxHandcart() {
         // Register lifecycle event listeners
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addListener(this::setup);
 
         // Register event handlers
         MinecraftForge.EVENT_BUS.register(this);
@@ -60,11 +59,6 @@ public class RxHandcart {
         if (FMLLoader.getDist().isClient()) {
             MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
         }
-    }
-
-    private void setup(final FMLCommonSetupEvent event) {
-        // Register capabilities
-        HandcartHandlerCapability.register();
     }
 
     @SubscribeEvent
@@ -90,12 +84,20 @@ public class RxHandcart {
 
     private void cloneHandcartHandler(Player oldPlayer, Player newPlayer){
         Capability<IHandcartHandler> capability = ModCapabilities.HANDCART_HANDLER_CAPABILITY;
-        Optional<IHandcartHandler> oldHandlerOptional = oldPlayer.getCapability(capability).resolve();
+        Optional<IHandcartHandler> oldHandlerOptional = getHandcartHandlerFromRemovedPlayer(oldPlayer);
         Optional<IHandcartHandler> newHandlerOptional = newPlayer.getCapability(capability).resolve();
 
         if (oldHandlerOptional.isPresent() && newHandlerOptional.isPresent()) {
             newHandlerOptional.get().cloneFrom(oldHandlerOptional.get());
         }
+    }
+
+    private Optional<IHandcartHandler> getHandcartHandlerFromRemovedPlayer(Player removedPlayer) {
+        Capability<IHandcartHandler> capability = ModCapabilities.HANDCART_HANDLER_CAPABILITY;
+        removedPlayer.reviveCaps();
+        Optional<IHandcartHandler> handlerOptional = removedPlayer.getCapability(capability).resolve();
+        removedPlayer.invalidateCaps();
+        return handlerOptional;
     }
 
     @SubscribeEvent
@@ -170,6 +172,11 @@ public class RxHandcart {
                     new HandcartItem(new Item.Properties().tab(CreativeModeTab.TAB_MISC)).setRegistryName("handcart"),
                     new HandcartSettingItem(new Item.Properties().tab(CreativeModeTab.TAB_MISC), 1).setRegistryName("handcart_setting")
             );
+        }
+
+        @SubscribeEvent
+        public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+            HandcartHandlerCapability.register(event);
         }
 
         @SubscribeEvent

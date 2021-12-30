@@ -1,9 +1,9 @@
 package com.github.iunius118.rxhandcart.capability;
 
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 
 public class ModCapabilities {
-    @CapabilityInject(IHandcartHandler.class)
-    public static Capability<IHandcartHandler> HANDCART_HANDLER_CAPABILITY = null;
+    public static final Capability<IHandcartHandler> HANDCART_HANDLER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
 }
