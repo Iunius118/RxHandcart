@@ -38,9 +38,14 @@ public class ModLanguageProvider extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
+        // Item groups
+        add("itemGroup." + RxHandcart.MOD_ID, RxHandcart.MOD_NAME);
+
+        // Items
         add(ModItems.HANDCART, translatedNameProvider.handcartName);
         add(ModItems.HANDCART_SETTING, translatedNameProvider.handcartSettingName);
 
+        // Containers
         add("container.rxhandcart.handcart", translatedNameProvider.handcartContainerName);
     }
 }

@@ -38,6 +38,7 @@ import java.util.OptionalInt;
 @Mod(RxHandcart.MOD_ID)
 public class RxHandcart {
     public static final String MOD_ID = "rxhandcart";
+    public static final String MOD_NAME ="RxHandcart";
     public static final Logger LOGGER = LogManager.getLogger();
     public static final ResourceLocation HANDCART_KEY = new ResourceLocation(MOD_ID, "handcart");
 

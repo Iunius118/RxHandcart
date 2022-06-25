@@ -1,5 +1,6 @@
 {
   "container.rxhandcart.handcart": "荷車",
   "item.rxhandcart.handcart": "荷車",
-  "item.rxhandcart.handcart_setting": "荷車の表示切替"
+  "item.rxhandcart.handcart_setting": "荷車の表示切替",
+  "itemGroup.rxhandcart": "RxHandcart"
 }
