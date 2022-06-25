@@ -1,7 +1,7 @@
 package com.github.iunius118.rxhandcart.data;
 
 import com.github.iunius118.rxhandcart.RxHandcart;
-import com.github.iunius118.rxhandcart.item.ModItems;
+import com.github.iunius118.rxhandcart.world.item.ModItems;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 

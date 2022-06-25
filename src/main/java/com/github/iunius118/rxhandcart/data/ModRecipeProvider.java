@@ -1,6 +1,6 @@
 package com.github.iunius118.rxhandcart.data;
 
-import com.github.iunius118.rxhandcart.item.ModItems;
+import com.github.iunius118.rxhandcart.world.item.ModItems;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;

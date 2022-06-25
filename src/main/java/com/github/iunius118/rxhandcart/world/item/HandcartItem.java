@@ -1,4 +1,4 @@
-package com.github.iunius118.rxhandcart.item;
+package com.github.iunius118.rxhandcart.world.item;
 
 import com.github.iunius118.rxhandcart.capability.IHandcartHandler;
 import com.github.iunius118.rxhandcart.capability.ModCapabilities;
