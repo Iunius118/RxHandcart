@@ -8,9 +8,11 @@ import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Consumer;
 
@@ -21,7 +23,7 @@ public class ModRecipeProvider  extends RecipeProvider implements IConditionBuil
 
     @Override
     protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
-        ResourceLocation handcartRegistryName = ModItems.HANDCART.getRegistryName();
+        ResourceLocation handcartRegistryName = getItemId(ModItems.HANDCART);
         ShapedRecipeBuilder.shaped(ModItems.HANDCART)
                 .group(handcartRegistryName.toString())
                 .pattern(" P ")
@@ -33,7 +35,7 @@ public class ModRecipeProvider  extends RecipeProvider implements IConditionBuil
                 .unlockedBy("has_planks", has(ItemTags.PLANKS))
                 .save(consumer, handcartRegistryName);
 
-        ResourceLocation handcartSettingRegistryName = ModItems.HANDCART_SETTING.getRegistryName();
+        ResourceLocation handcartSettingRegistryName = getItemId(ModItems.HANDCART_SETTING);
         ShapelessRecipeBuilder.shapeless(ModItems.HANDCART_SETTING)
                 .group(handcartSettingRegistryName.toString())
                 .requires(ModItems.HANDCART)
@@ -45,5 +47,9 @@ public class ModRecipeProvider  extends RecipeProvider implements IConditionBuil
                 .requires(ModItems.HANDCART_SETTING)
                 .unlockedBy("has_handcart", has(ModItems.HANDCART))
                 .save(consumer, handcartRegistryName + "_res");
+    }
+
+    private ResourceLocation getItemId(Item item) {
+        return ForgeRegistries.ITEMS.getKey(item);
     }
 }

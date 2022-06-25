@@ -5,25 +5,20 @@ import com.github.iunius118.rxhandcart.capability.IHandcartHandler;
 import com.github.iunius118.rxhandcart.capability.ModCapabilities;
 import com.github.iunius118.rxhandcart.client.ClientEventHandler;
 import com.github.iunius118.rxhandcart.data.ModItemModelProvider;
-import com.github.iunius118.rxhandcart.data.ModLanguageProviders;
+import com.github.iunius118.rxhandcart.data.ModLanguageProvider;
 import com.github.iunius118.rxhandcart.data.ModRecipeProvider;
-import com.github.iunius118.rxhandcart.item.HandcartItem;
-import com.github.iunius118.rxhandcart.item.HandcartSettingItem;
+import com.github.iunius118.rxhandcart.item.ModItems;
 import com.github.iunius118.rxhandcart.network.ChangeCartMessage;
 import com.github.iunius118.rxhandcart.network.NetworkHandler;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -33,6 +28,7 @@ import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -54,6 +50,11 @@ public class RxHandcart {
 
         // Register event handlers
         MinecraftForge.EVENT_BUS.register(this);
+
+        // Register mod event handlers
+        modEventBus.addListener(this::registerItems);
+        modEventBus.addListener(this::registerCapabilities);
+        modEventBus.addListener(this::gatherData);
 
         // Register client-side event handler
         if (FMLLoader.getDist().isClient()) {
@@ -164,34 +165,26 @@ public class RxHandcart {
         changeCartChannel.send(target, message);
     }
 
-    @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistryEvents {
-        @SubscribeEvent
-        public static void onItemRegistry(final RegistryEvent.Register<Item> itemRegistryEvent) {
-            itemRegistryEvent.getRegistry().registerAll(
-                    new HandcartItem(new Item.Properties().tab(CreativeModeTab.TAB_MISC)).setRegistryName("handcart"),
-                    new HandcartSettingItem(new Item.Properties().tab(CreativeModeTab.TAB_MISC), 1).setRegistryName("handcart_setting")
-            );
-        }
+    public void registerItems(RegisterEvent event) {
+        if (!event.getRegistryKey().equals(Registry.ITEM_REGISTRY))
+            return;
 
-        @SubscribeEvent
-        public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-            HandcartHandlerCapability.register(event);
-        }
+        event.register(Registry.ITEM_REGISTRY, new ResourceLocation(RxHandcart.MOD_ID, "handcart"), () -> ModItems.HANDCART);
+        event.register(Registry.ITEM_REGISTRY, new ResourceLocation(RxHandcart.MOD_ID, "handcart_setting"), () -> ModItems.HANDCART_SETTING);
+    }
 
-        @SubscribeEvent
-        public static void gatherData(final GatherDataEvent event) {
-            DataGenerator generator = event.getGenerator();
+    public void registerCapabilities(RegisterCapabilitiesEvent event) {
+        HandcartHandlerCapability.register(event);
+    }
 
-            if (event.includeServer()) {
-                generator.addProvider(new ModRecipeProvider(generator));
-            }
+    public void gatherData(final GatherDataEvent event) {
+        var dataGenerator = event.getGenerator();
+        var existingFileHelper = event.getExistingFileHelper();
 
-            if (event.includeClient()) {
-                ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-                generator.addProvider(new ModItemModelProvider(generator, existingFileHelper));
-                ModLanguageProviders.addTo(generator);
-            }
-        }
+        dataGenerator.addProvider(event.includeServer(), new ModRecipeProvider(dataGenerator));
+
+        boolean includeClient = event.includeClient();
+        dataGenerator.addProvider(includeClient, new ModItemModelProvider(dataGenerator, existingFileHelper));
+        ModLanguageProvider.addProviders(includeClient, dataGenerator);
     }
 }

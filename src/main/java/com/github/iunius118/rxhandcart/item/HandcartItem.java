@@ -4,7 +4,6 @@ import com.github.iunius118.rxhandcart.capability.IHandcartHandler;
 import com.github.iunius118.rxhandcart.capability.ModCapabilities;
 import com.github.iunius118.rxhandcart.inventory.HandcartInventory;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
@@ -20,7 +19,7 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 
 public class HandcartItem extends Item {
-    public static final Component CONTAINER_TITLE = new TranslatableComponent("container.rxhandcart.handcart");
+    public static final Component CONTAINER_TITLE = Component.translatable("container.rxhandcart.handcart");
 
     public HandcartItem(Properties properties) {
         super(properties);

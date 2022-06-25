@@ -6,6 +6,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class ModItemModelProvider extends ItemModelProvider {
     public ModItemModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
@@ -19,7 +20,7 @@ public class ModItemModelProvider extends ItemModelProvider {
     }
 
     private void registerSingleTextureModel(Item item) {
-        String itemPath = item.getRegistryName().getPath();
+        String itemPath = ForgeRegistries.ITEMS.getKey(item).getPath();
         singleTexture(itemPath, mcLoc("item/generated"), "layer0", modLoc("item/" + itemPath));
     }
 }
