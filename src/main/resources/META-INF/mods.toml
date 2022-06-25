@@ -1,6 +1,6 @@
 
 modLoader="javafml"
-loaderVersion="[38,)"
+loaderVersion="[41,)"
 license="All rights reserved"
 issueTrackerURL="https://github.com/Iunius118/RxHandcart/issues"
 
@@ -18,12 +18,12 @@ description="Adds a handcart."
 [[dependencies.rxhandcart]]
     modId="forge"
     mandatory=true
-    versionRange="[38,)"
+    versionRange="[41,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.rxhandcart]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.18,1.19)"
+    versionRange="[1.19,1.20)"
     ordering="NONE"
     side="BOTH"
