@@ -1,22 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "rxhandcart:handcart",
-  "pattern": [
-    " P ",
-    "sBP",
-    " s "
-  ],
   "key": {
+    "B": {
+      "item": "minecraft:barrel"
+    },
     "P": {
       "tag": "minecraft:planks"
     },
     "s": {
       "tag": "forge:rods/wooden"
-    },
-    "B": {
-      "item": "minecraft:barrel"
     }
   },
+  "pattern": [
+    " P ",
+    "sBP",
+    " s "
+  ],
   "result": {
     "item": "rxhandcart:handcart"
   }

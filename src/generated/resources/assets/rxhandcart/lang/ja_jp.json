@@ -1,5 +1,5 @@
 {
-  "container.rxhandcart.handcart": "\u8377\u8ECA",
-  "item.rxhandcart.handcart": "\u8377\u8ECA",
-  "item.rxhandcart.handcart_setting": "\u8377\u8ECA\u306E\u8868\u793A\u5207\u66FF"
+  "container.rxhandcart.handcart": "荷車",
+  "item.rxhandcart.handcart": "荷車",
+  "item.rxhandcart.handcart_setting": "荷車の表示切替"
 }
