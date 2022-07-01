@@ -28,7 +28,8 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void onRenderWorldLastEvent(RenderLevelLastEvent event) {
         Options options = Minecraft.getInstance().options;
-        if (options.getCameraType() != CameraType.FIRST_PERSON) return;
+        if (options.getCameraType() != CameraType.FIRST_PERSON)
+            return;
 
         // Render handcart in first person view
         handcartRenderer.renderHandcartFP(event.getPartialTick(), event.getPoseStack());

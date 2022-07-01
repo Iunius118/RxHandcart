@@ -43,17 +43,21 @@ public class ChangeCartMessage {
     }
 
     private static void changeCart(ChangeCartMessage msg) {
-        if (FMLLoader.getDist().isDedicatedServer()) return;
-        // Only in client
+        if (FMLLoader.getDist().isDedicatedServer())
+            return;
 
+        // Only in client
         ClientLevel level = Minecraft.getInstance().level;
-        if (level == null) return;
+        if (level == null)
+            return;
 
         Entity entity = level.getEntity(msg.entityId);
-        if (entity == null) return;
+        if (entity == null)
+            return;
 
         Optional<IHandcartHandler> capability = entity.getCapability(ModCapabilities.HANDCART_HANDLER_CAPABILITY).resolve();
-        if (!capability.isPresent()) return;
+        if (capability.isEmpty())
+            return;
 
         IHandcartHandler handcartHandler = capability.get();
         handcartHandler.setType(msg.handcartType);

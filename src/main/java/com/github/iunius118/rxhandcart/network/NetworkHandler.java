@@ -2,7 +2,10 @@ package com.github.iunius118.rxhandcart.network;
 
 import com.github.iunius118.rxhandcart.RxHandcart;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public class NetworkHandler {
@@ -28,5 +31,19 @@ public class NetworkHandler {
 
     public SimpleChannel getChangeCartChannel() {
         return CHANGE_CART_CHANNEL;
+    }
+
+    public void sendChangeCartPacket(Entity owner, int type, ServerPlayer receiver) {
+        SimpleChannel changeCartChannel = getChangeCartChannel();
+        PacketDistributor.PacketTarget target = PacketDistributor.PLAYER.with(() -> receiver);
+        ChangeCartMessage message = new ChangeCartMessage(owner, type);
+        changeCartChannel.send(target, message);
+    }
+
+    public void broadcastChangeCartPacket(Entity owner, int type) {
+        SimpleChannel changeCartChannel = getChangeCartChannel();
+        PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> owner);
+        ChangeCartMessage message = new ChangeCartMessage(owner, type);
+        changeCartChannel.send(target, message);
     }
 }

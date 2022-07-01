@@ -36,14 +36,17 @@ public class HandcartState {
 
     public static Optional<HandcartState> of(Player owner, float partialTick) {
         OptionalInt handcartType = RxHandcart.getHandcartType(owner);
-        if (!handcartType.isPresent()) return Optional.empty();
+        if (handcartType.isEmpty())
+            return Optional.empty();
 
         int type = handcartType.getAsInt();
-        if (type == HandcartHandler.INVISIBLE_TYPE) return Optional.empty();
+        if (type == HandcartHandler.INVISIBLE_TYPE)
+            return Optional.empty();
 
         IHandcartModel handcartModel = HandcartManager.getHandcartModel(type);
         ResourceLocation textureLocation = HandcartManager.getHandcartTexture(type);
-        if (handcartModel == null || textureLocation == null) return Optional.empty();
+        if (handcartModel == null || textureLocation == null)
+            return Optional.empty();
 
         Vec3 ownerMotion = owner.getDeltaMovement();
         Vec3 ownerHorizontalMotion = new Vec3(ownerMotion.x, 0, ownerMotion.z);

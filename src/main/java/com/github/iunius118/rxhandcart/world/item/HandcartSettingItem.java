@@ -38,7 +38,8 @@ public class HandcartSettingItem extends Item {
 
     private void switchHandcartType(Player player) {
         Optional<IHandcartHandler> capability = player.getCapability(ModCapabilities.HANDCART_HANDLER_CAPABILITY).resolve();
-        if (!capability.isPresent()) return;
+        if (capability.isEmpty())
+            return;
 
         IHandcartHandler handcartHandler = capability.get();
         int oldType = handcartHandler.getType();
@@ -52,7 +53,7 @@ public class HandcartSettingItem extends Item {
         // Update capability in server
         handcartHandler.setType(newType);
         // Update visibility of handcart in each client
-        RxHandcart.broadcastChangeCartPacket(player, newType);
+        RxHandcart.NETWORK_HANDLER.broadcastChangeCartPacket(player, newType);
         // Add cool-down time
         ItemCooldowns cooldownTracker = player.getCooldowns();
         cooldownTracker.addCooldown(this, getCoolDownTime());

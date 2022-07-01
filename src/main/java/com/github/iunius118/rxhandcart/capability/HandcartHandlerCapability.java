@@ -20,7 +20,7 @@ public class HandcartHandlerCapability {
     }
 
     public static class Provider implements ICapabilitySerializable<Tag> {
-        protected LazyOptional<IHandcartHandler> inst = LazyOptional.of(HandcartHandler::new);
+        protected final LazyOptional<IHandcartHandler> inst = LazyOptional.of(HandcartHandler::new);
 
         @Nonnull
         @Override
@@ -74,9 +74,8 @@ public class HandcartHandlerCapability {
         }
 
         public void readNBT(Capability<IHandcartHandler> capability, IHandcartHandler instance, Direction side, Tag base) {
-            if (!(base instanceof CompoundTag)) return;
-
-            CompoundTag tag = (CompoundTag) base;
+            if (!(base instanceof CompoundTag tag))
+                return;
 
             // Load type from NBT
             if (tag.contains(KET_TYPE, Tag.TAG_INT)) {

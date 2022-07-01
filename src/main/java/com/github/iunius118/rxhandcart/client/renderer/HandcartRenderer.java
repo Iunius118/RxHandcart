@@ -32,7 +32,8 @@ public class HandcartRenderer {
     // Render handcarts in third person view
     public void renderHandcartTP(Player player, float partialTick, PoseStack matrixStack, MultiBufferSource renderBuffer) {
         Optional<HandcartState> stateOptional = HandcartState.of(player, partialTick);
-        if (!stateOptional.isPresent()) return;
+        if (stateOptional.isEmpty())
+            return;
 
         HandcartState state = stateOptional.get();
         Level world = player.level;
@@ -58,10 +59,12 @@ public class HandcartRenderer {
     public void renderHandcartFP(float partialTick, PoseStack matrixStack) {
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer player = minecraft.player;
-        if (player == null) return;
+        if (player == null)
+            return;
 
         Optional<HandcartState> stateOptional = HandcartState.of(player, partialTick);
-        if (!stateOptional.isPresent()) return;
+        if (stateOptional.isEmpty())
+            return;
 
         HandcartState state = stateOptional.get();
         Level world = player.level;
@@ -101,8 +104,8 @@ public class HandcartRenderer {
     private void renderShadow(Vec3 handcartPosition, PoseStack matrixStack, MultiBufferSource renderBuffer){
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer player = minecraft.player;
-
-        if (player == null) return;
+        if (player == null)
+            return;
 
         // Calculate shadow strength
         GameRenderer gameRenderer = minecraft.gameRenderer;
@@ -111,7 +114,8 @@ public class HandcartRenderer {
         double cameraDistance = cameraPosition.distanceToSqr(handcartPosition);
         float shadowStrength = (float)(1.0D - cameraDistance / 256.0D);
 
-        if (shadowStrength <= 0) return;
+        if (shadowStrength <= 0)
+            return;
 
         // Calculate area to render shadow
         int minX = Mth.floor(handcartPosition.x - (double) SHADOW_RADIUS);
