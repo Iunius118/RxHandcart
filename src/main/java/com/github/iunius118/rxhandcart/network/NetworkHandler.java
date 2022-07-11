@@ -25,7 +25,7 @@ public class NetworkHandler {
         CHANGE_CART_CHANNEL.messageBuilder(ChangeCartMessage.class, 0)
                 .encoder(ChangeCartMessage::encode)
                 .decoder(ChangeCartMessage::decode)
-                .consumer(ChangeCartMessage::handle)
+                .consumerMainThread(ChangeCartMessage::handle)
                 .add();
     }
 
@@ -34,16 +34,14 @@ public class NetworkHandler {
     }
 
     public void sendChangeCartPacket(Entity owner, int type, ServerPlayer receiver) {
-        SimpleChannel changeCartChannel = getChangeCartChannel();
         PacketDistributor.PacketTarget target = PacketDistributor.PLAYER.with(() -> receiver);
         ChangeCartMessage message = new ChangeCartMessage(owner, type);
-        changeCartChannel.send(target, message);
+        CHANGE_CART_CHANNEL.send(target, message);
     }
 
     public void broadcastChangeCartPacket(Entity owner, int type) {
-        SimpleChannel changeCartChannel = getChangeCartChannel();
         PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> owner);
         ChangeCartMessage message = new ChangeCartMessage(owner, type);
-        changeCartChannel.send(target, message);
+        CHANGE_CART_CHANNEL.send(target, message);
     }
 }
