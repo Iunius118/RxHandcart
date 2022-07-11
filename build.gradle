@@ -111,6 +111,11 @@ jar {
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
+
+    from("LICENSE") {
+        rename { "${it}_${project.archivesBaseName}"}
+    }
+    from("CHANGELOG.txt")
 }
 
 jar.finalizedBy('reobfJar')
