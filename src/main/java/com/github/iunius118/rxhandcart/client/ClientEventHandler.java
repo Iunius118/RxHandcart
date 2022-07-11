@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.client.event.RenderLevelLastEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -26,7 +26,10 @@ public class ClientEventHandler {
     }
 
     @SubscribeEvent
-    public void onRenderWorldLastEvent(RenderLevelLastEvent event) {
+    public void onRenderLevelStageEvent(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_SKY)
+            return;
+
         Options options = Minecraft.getInstance().options;
         if (options.getCameraType() != CameraType.FIRST_PERSON)
             return;
