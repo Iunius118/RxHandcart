@@ -16,7 +16,7 @@ import java.util.OptionalInt;
 public class PlayerEventHandler {
     @SubscribeEvent
     public void onPlayerClone(PlayerEvent.Clone event) {
-        Player newPlayer = event.getPlayer();
+        Player newPlayer = event.getEntity();
         Player oldPlayer = event.getOriginal();
 
         if (event.isWasDeath()) {
@@ -45,7 +45,7 @@ public class PlayerEventHandler {
 
     @SubscribeEvent
     public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         if (!(player instanceof ServerPlayer owner))
             return;
 
@@ -59,7 +59,7 @@ public class PlayerEventHandler {
 
     @SubscribeEvent
     public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         if (!(player instanceof ServerPlayer owner))
             return;
 
@@ -73,7 +73,7 @@ public class PlayerEventHandler {
 
     @SubscribeEvent
     public void onStartTracking(PlayerEvent.StartTracking event) {
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         if (!(player instanceof ServerPlayer receiver))
             return;
 

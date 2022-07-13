@@ -16,7 +16,7 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void onPostRenderPlayerEvent(RenderPlayerEvent.Post event) {
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         float partialTick = event.getPartialTick();
         MultiBufferSource renderBuffer = event.getMultiBufferSource();
         PoseStack matrixStack = event.getPoseStack();
