@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [1.19-0.1.4.1]
+### Fixed
+- Rendering with shader pack in first-person view.
+
 ## [1.19-0.1.4.0]
 ### Changed
 - Compatible with Forge 1.19-41.0.98.
