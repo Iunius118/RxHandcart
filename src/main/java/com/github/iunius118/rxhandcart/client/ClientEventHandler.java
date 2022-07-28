@@ -27,7 +27,7 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void onRenderLevelStageEvent(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_SKY)
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS)
             return;
 
         Options options = Minecraft.getInstance().options;
