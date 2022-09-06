@@ -1,15 +1,12 @@
 package com.github.iunius118.rxhandcart.network;
 
-import com.github.iunius118.rxhandcart.capability.IHandcartHandler;
-import com.github.iunius118.rxhandcart.capability.ModCapabilities;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
+import com.github.iunius118.rxhandcart.client.ClientMessageHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 
 public class ChangeCartMessage {
@@ -38,28 +35,17 @@ public class ChangeCartMessage {
     }
 
     public static void handle(ChangeCartMessage msg, Supplier<NetworkEvent.Context> ctx) {
-        changeCart(msg);
+        ctx.get().enqueueWork(() ->
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientMessageHandler.changeCart(msg))
+        );
         ctx.get().setPacketHandled(true);
     }
 
-    private static void changeCart(ChangeCartMessage msg) {
-        if (FMLLoader.getDist().isDedicatedServer())
-            return;
+    public int getEntityId() {
+        return entityId;
+    }
 
-        // Only in client
-        ClientLevel level = Minecraft.getInstance().level;
-        if (level == null)
-            return;
-
-        Entity entity = level.getEntity(msg.entityId);
-        if (entity == null)
-            return;
-
-        Optional<IHandcartHandler> capability = entity.getCapability(ModCapabilities.HANDCART_HANDLER_CAPABILITY).resolve();
-        if (capability.isEmpty())
-            return;
-
-        IHandcartHandler handcartHandler = capability.get();
-        handcartHandler.setType(msg.handcartType);
+    public int getHandcartType() {
+        return handcartType;
     }
 }
