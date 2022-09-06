@@ -1,30 +1,35 @@
+buildscript {
+    dependencies {
+        // MixinGradle:
+        classpath 'org.spongepowered:mixingradle:0.7.+'
+    }
+}
+
 plugins {
     id 'eclipse'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '5.1+'
 }
 
-version = minecraft_version + '-' + mod_version
-group = maven_group // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = archives_base_name
+// MixinGradle:
+apply plugin: 'org.spongepowered.mixin'
+
+version = project.minecraft_version + '-' + project.mod_version
+group = project.maven_group
+archivesBaseName = project.archives_base_name
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: "${mappings_channel}", version: "${mappings_version}"
-    
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    mappings channel: "${project.mappings_channel}", version: "${project.mappings_version}"
 
     runs {
         client {
             workingDirectory project.file('run')
-
             // property 'forge.logging.markers', 'REGISTRIES'
-
             property 'forge.logging.console.level', 'debug'
-
             property 'forge.enabledGameTestNamespaces', 'rxhandcart'
 
             mods {
@@ -36,11 +41,8 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
-
             // property 'forge.logging.markers', 'REGISTRIES'
-
             property 'forge.logging.console.level', 'debug'
-
             property 'forge.enabledGameTestNamespaces', 'rxhandcart'
 
             mods {
@@ -52,11 +54,8 @@ minecraft {
 
         gameTestServer {
             workingDirectory project.file('run')
-
             // property 'forge.logging.markers', 'REGISTRIES'
-
             property 'forge.logging.console.level', 'debug'
-
             property 'forge.enabledGameTestNamespaces', 'rxhandcart'
 
             mods {
@@ -68,13 +67,9 @@ minecraft {
 
         data {
             workingDirectory project.file('run')
-
             // property 'forge.logging.markers', 'REGISTRIES'
-
             property 'forge.logging.console.level', 'debug'
-
             property 'forge.enabledGameTestNamespaces', 'rxhandcart'
-
             args '--mod', 'rxhandcart', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
@@ -88,6 +83,15 @@ minecraft {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+mixin {
+    // MixinGradle Settings
+    add sourceSets.main, 'mixins.rxhandcart.refmap.json'
+    config 'mixins.rxhandcart.json'
+
+    debug.verbose = true
+    debug.export = true
+}
+
 repositories {
     // flatDir {
     //     dir 'libs'
@@ -96,6 +100,9 @@ repositories {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:' + minecraft_version + '-' + forge_version
+
+    // Apply Mixin AP
+    annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
@@ -119,7 +126,6 @@ jar {
 }
 
 jar.finalizedBy('reobfJar')
-
 // publish.dependsOn('reobfJar')
 
 publishing {
@@ -136,5 +142,5 @@ publishing {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+    options.encoding = 'UTF-8'
 }

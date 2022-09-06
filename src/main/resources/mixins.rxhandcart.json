@@ -1,0 +1,10 @@
+{
+  "package": "com.github.iunius118.rxhandcart.mixin",
+  "client": [
+
+  ],
+  "refmap": "mixins.rxhandcart.refmap.json",
+  "required": true,
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_17"
+}
