@@ -17,10 +17,10 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
@@ -79,6 +79,8 @@ public class HandcartRenderer {
         Vec3 position = state.position;
         int light = LevelRenderer.getLightColor(world, new BlockPos(position.x, position.y, position.z));
         renderHandcart(state, matrixStack, renderBuffer, light);
+        // Render handcart's shadow
+        renderShadow(position, matrixStack, renderBuffer);
 
         matrixStack.popPose();
     }
@@ -102,41 +104,32 @@ public class HandcartRenderer {
     }
 
     private void renderShadow(Vec3 handcartPosition, PoseStack matrixStack, MultiBufferSource renderBuffer){
-        Minecraft minecraft = Minecraft.getInstance();
-        LocalPlayer player = minecraft.player;
+        var minecraft = Minecraft.getInstance();
+        var player = minecraft.player;
+
         if (player == null)
             return;
 
-        // Calculate shadow strength
-        GameRenderer gameRenderer = minecraft.gameRenderer;
-        Camera mainCamera = gameRenderer.getMainCamera();
-        Vec3 cameraPosition = mainCamera.getPosition();
-        double cameraDistance = cameraPosition.distanceToSqr(handcartPosition);
-        float shadowStrength = (float)(1.0D - cameraDistance / 256.0D);
+        float shadowStrength = getShadowStrength(handcartPosition);
 
         if (shadowStrength <= 0)
             return;
 
-        // Calculate area to render shadow
-        int minX = Mth.floor(handcartPosition.x - (double) SHADOW_RADIUS);
-        int maxX = Mth.floor(handcartPosition.x + (double) SHADOW_RADIUS);
-        int minY = Mth.floor(handcartPosition.y - (double) SHADOW_RADIUS);
-        int maxY = Mth.floor(handcartPosition.y);
-        int minZ = Mth.floor(handcartPosition.z - (double) SHADOW_RADIUS);
-        int maxZ = Mth.floor(handcartPosition.z + (double) SHADOW_RADIUS);
-
+        HandcartShadowRenderer blockShadowRenderer = (HandcartShadowRenderer) minecraft.getEntityRenderDispatcher();
         VertexConsumer vertexBuilder = renderBuffer.getBuffer(SHADOW_RENDER_TYPE);
-        Level world = player.level;
-
-        matrixStack.pushPose();
-        matrixStack.translate(handcartPosition.x, handcartPosition.y, handcartPosition.z);
-
-        PoseStack.Pose matrixEntry = matrixStack.last();
-
-        for(BlockPos blockPos : BlockPos.betweenClosed(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ))) {
-            EntityRenderDispatcher.renderBlockShadow(matrixEntry, vertexBuilder, world, blockPos, handcartPosition.x, handcartPosition.y, handcartPosition.z, SHADOW_RADIUS, shadowStrength);
-        }
-
-        matrixStack.popPose();
+        var context = new RenderHandcartShadowContext(matrixStack, vertexBuilder, player.level, handcartPosition, SHADOW_RADIUS, shadowStrength);
+        blockShadowRenderer.renderHandcartShadow(context);
     }
+
+    private float getShadowStrength(Vec3 handcartPosition) {
+        // Calculate shadow strength
+        var minecraft = Minecraft.getInstance();
+        var gameRenderer = minecraft.gameRenderer;
+        var mainCamera = gameRenderer.getMainCamera();
+        Vec3 cameraPosition = mainCamera.getPosition();
+        double cameraDistance = cameraPosition.distanceToSqr(handcartPosition);
+        return  (float)(1.0D - cameraDistance / 256.0D);
+    }
+
+    public record RenderHandcartShadowContext(PoseStack matrixStack, VertexConsumer vertexBuilder, LevelReader level, Vec3 handcartPosition, float shadowRadius, float shadowStrength) {}
 }
