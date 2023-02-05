@@ -88,12 +88,13 @@ public class RxHandcart {
 
     public void gatherData(final GatherDataEvent event) {
         var dataGenerator = event.getGenerator();
+        var packOutput = dataGenerator.getPackOutput();
         var existingFileHelper = event.getExistingFileHelper();
 
-        dataGenerator.addProvider(event.includeServer(), new ModRecipeProvider(dataGenerator));
+        dataGenerator.addProvider(event.includeServer(), new ModRecipeProvider(packOutput));
 
         boolean includeClient = event.includeClient();
-        dataGenerator.addProvider(includeClient, new ModItemModelProvider(dataGenerator, existingFileHelper));
-        ModLanguageProvider.addProviders(includeClient, dataGenerator);
+        dataGenerator.addProvider(includeClient, new ModItemModelProvider(packOutput, existingFileHelper));
+        ModLanguageProvider.addProviders(includeClient, dataGenerator, packOutput);
     }
 }

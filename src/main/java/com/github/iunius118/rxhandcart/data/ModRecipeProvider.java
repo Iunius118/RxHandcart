@@ -1,11 +1,8 @@
 package com.github.iunius118.rxhandcart.data;
 
 import com.github.iunius118.rxhandcart.world.item.ModItems;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
@@ -16,15 +13,15 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Consumer;
 
-public class ModRecipeProvider  extends RecipeProvider implements IConditionBuilder {
-    public ModRecipeProvider(DataGenerator generatorIn) {
-        super(generatorIn);
+public class ModRecipeProvider extends RecipeProvider implements IConditionBuilder {
+    public ModRecipeProvider(PackOutput packOutput) {
+        super(packOutput);
     }
 
     @Override
-    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
+    protected void buildRecipes(Consumer<FinishedRecipe> consumer) {
         ResourceLocation handcartRegistryName = getItemId(ModItems.HANDCART);
-        ShapedRecipeBuilder.shaped(ModItems.HANDCART)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.HANDCART)
                 .group(handcartRegistryName.toString())
                 .pattern(" P ")
                 .pattern("sBP")
@@ -36,13 +33,13 @@ public class ModRecipeProvider  extends RecipeProvider implements IConditionBuil
                 .save(consumer, handcartRegistryName);
 
         ResourceLocation handcartSettingRegistryName = getItemId(ModItems.HANDCART_SETTING);
-        ShapelessRecipeBuilder.shapeless(ModItems.HANDCART_SETTING)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.HANDCART_SETTING)
                 .group(handcartSettingRegistryName.toString())
                 .requires(ModItems.HANDCART)
                 .unlockedBy("has_handcart", has(ModItems.HANDCART))
                 .save(consumer, handcartSettingRegistryName);
 
-        ShapelessRecipeBuilder.shapeless(ModItems.HANDCART)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.HANDCART)
                 .group(handcartRegistryName.toString())
                 .requires(ModItems.HANDCART_SETTING)
                 .unlockedBy("has_handcart", has(ModItems.HANDCART))
