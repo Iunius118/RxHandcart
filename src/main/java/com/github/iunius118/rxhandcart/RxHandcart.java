@@ -15,7 +15,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -49,7 +48,6 @@ public class RxHandcart {
 
         // Register mod event handlers
         modEventBus.addListener(this::registerItems);
-        modEventBus.addListener(this::registerCapabilities);
         modEventBus.addListener(this::gatherData);
 
         // Register client-side event handler

@@ -7,7 +7,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -15,10 +14,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class HandcartHandlerCapability {
-    public static void register(RegisterCapabilitiesEvent event) {
-        event.register(IHandcartHandler.class);
-    }
-
     public static class Provider implements ICapabilitySerializable<Tag> {
         protected final LazyOptional<IHandcartHandler> inst = LazyOptional.of(HandcartHandler::new);
 
