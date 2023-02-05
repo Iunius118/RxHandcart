@@ -11,7 +11,7 @@ import com.github.iunius118.rxhandcart.data.ModRecipeProvider;
 import com.github.iunius118.rxhandcart.network.NetworkHandler;
 import com.github.iunius118.rxhandcart.world.item.ModItemGroups;
 import com.github.iunius118.rxhandcart.world.item.ModItems;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -77,15 +77,11 @@ public class RxHandcart {
     }
 
     public void registerItems(RegisterEvent event) {
-        if (!event.getRegistryKey().equals(Registry.ITEM_REGISTRY))
+        if (!event.getRegistryKey().equals(Registries.ITEM))
             return;
 
-        event.register(Registry.ITEM_REGISTRY, new ResourceLocation(RxHandcart.MOD_ID, "handcart"), () -> ModItems.HANDCART);
-        event.register(Registry.ITEM_REGISTRY, new ResourceLocation(RxHandcart.MOD_ID, "handcart_setting"), () -> ModItems.HANDCART_SETTING);
-    }
-
-    public void registerCapabilities(RegisterCapabilitiesEvent event) {
-        HandcartHandlerCapability.register(event);
+        event.register(Registries.ITEM, new ResourceLocation(RxHandcart.MOD_ID, "handcart"), () -> ModItems.HANDCART);
+        event.register(Registries.ITEM, new ResourceLocation(RxHandcart.MOD_ID, "handcart_setting"), () -> ModItems.HANDCART_SETTING);
     }
 
     public void gatherData(final GatherDataEvent event) {
