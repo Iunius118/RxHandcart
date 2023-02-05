@@ -9,6 +9,7 @@ import com.github.iunius118.rxhandcart.data.ModItemModelProvider;
 import com.github.iunius118.rxhandcart.data.ModLanguageProvider;
 import com.github.iunius118.rxhandcart.data.ModRecipeProvider;
 import com.github.iunius118.rxhandcart.network.NetworkHandler;
+import com.github.iunius118.rxhandcart.world.item.ModItemGroups;
 import com.github.iunius118.rxhandcart.world.item.ModItems;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -49,6 +50,7 @@ public class RxHandcart {
         // Register mod event handlers
         modEventBus.addListener(this::registerItems);
         modEventBus.addListener(this::gatherData);
+        modEventBus.register(ModItemGroups.class);
 
         // Register client-side event handler
         if (FMLLoader.getDist().isClient()) {
