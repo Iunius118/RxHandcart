@@ -2,9 +2,9 @@ package com.github.iunius118.rxhandcart.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
 import net.minecraft.world.phys.Vec2;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.util.List;
 
@@ -88,20 +88,20 @@ public class SimpleModel {
     }
 
     protected void renderQuads(PoseStack matrixStack, VertexConsumer buffer, List<SimpleQuad> quads, int lightmapCoord, int overlayColor, float red, float green, float blue, float alpha) {
-        PoseStack.Pose matrixEntry = matrixStack.last();
+        PoseStack.Pose pose = matrixStack.last();
 
         for (SimpleQuad face : quads) {
             for (int i = 0; i < 4; i++) {
                 SimpleVertex vertex = face.vertices[i];
 
-                Vector4f pos = new Vector4f(vertex.pos);
-                pos.transform(matrixEntry.pose());
+                Vector4f pos = new Vector4f(vertex.pos, 1.0F);
+                pose.pose().transform(pos);
 
                 Vector4f vColor = vertex.color;
                 Vec2 uv = vertex.uv;
 
-                Vector3f normal = vertex.normal.copy();
-                normal.transform(matrixEntry.normal());
+                Vector3f normal = new Vector3f(vertex.normal);
+                pose.normal().transform(normal);
 
                 buffer.vertex(pos.x(), pos.y(), pos.z(),
                         red * vColor.x(), green * vColor.y(), blue * vColor.z(), alpha * vColor.w(),

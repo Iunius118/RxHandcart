@@ -4,7 +4,6 @@ import com.github.iunius118.rxhandcart.client.HandcartState;
 import com.github.iunius118.rxhandcart.client.model.IHandcartModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -22,6 +21,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix4f;
 
 import java.util.Optional;
 
@@ -95,7 +95,7 @@ public class HandcartRenderer {
 
         // Render handcart model
         matrixStack.translate(position.x, position.y, position.z);
-        matrixStack.mulPose(Vector3f.YP.rotationDegrees(rotation));
+        matrixStack.mulPoseMatrix(new Matrix4f().rotate((float) Math.toRadians(rotation), 0.0f, 1.0f, 0.0f));
         matrixStack.scale(1.5F, 1.5F, 1.5F);
         VertexConsumer vertexBuilder = renderBuffer.getBuffer(RenderType.entityCutoutNoCull(texture));
         model.render(matrixStack, vertexBuilder, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
