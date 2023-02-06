@@ -4,6 +4,14 @@
 
 ## [Unreleased]
 
+## [1.19.3-1.0.0.0]
+### Fixed
+- Synchronization of handcart when player changes dimension.
+
+### Changed
+- Port to 1.19.3.
+- Compatible with Forge 1.19.3-44.1.0.
+
 ## [1.19-0.1.4.2]
 ### Fixed
 - Rendering of handcart shadows.
@@ -33,7 +41,7 @@
 
 ## [1.19-0.1.1.0]
 ### Added
-- Mod item group.
+- Mod item group and creative mode tab.
 
 ### Changed
 - Port to 1.19 and Forge 1.19-41.0.45.
