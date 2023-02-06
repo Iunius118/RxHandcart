@@ -19,10 +19,8 @@ public class PlayerEventHandler {
         Player newPlayer = event.getEntity();
         Player oldPlayer = event.getOriginal();
 
-        if (event.isWasDeath()) {
-            // Copy old capability data to new capability when player has respawned
-            cloneHandcartHandler(oldPlayer, newPlayer);
-        }
+        // Copy handcart capability from removed player to cloned player when player has respawned
+        cloneHandcartHandler(oldPlayer, newPlayer);
     }
 
     private void cloneHandcartHandler(Player oldPlayer, Player newPlayer){
@@ -41,6 +39,20 @@ public class PlayerEventHandler {
         Optional<IHandcartHandler> handlerOptional = removedPlayer.getCapability(capability).resolve();
         removedPlayer.invalidateCaps();
         return handlerOptional;
+    }
+
+    @SubscribeEvent
+    public void onPlayerChangedDimension (PlayerEvent.PlayerChangedDimensionEvent event) {
+        Player player = event.getEntity();
+        if (!(player instanceof ServerPlayer owner))
+            return;
+
+        OptionalInt type = RxHandcart.getHandcartType(owner);
+        if (type.isEmpty())
+            return;
+
+        // Send cart type of logged in player to their client
+        RxHandcart.NETWORK_HANDLER.sendChangeCartPacket(owner, type.getAsInt(), owner);
     }
 
     @SubscribeEvent
