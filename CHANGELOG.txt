@@ -4,6 +4,16 @@
 
 ## [Unreleased]
 
+## [2.0.0]
+### Fixed
+- Behavior of Y coordinate of rendered handcart.
+
+### Changed
+- Port to 1.20.1.
+- Compatible with Forge 1.20.1-47.1.0.
+- Version scheme.
+- Capability IHandcartHandler to change handcart rendering.
+
 ## [1.19.3-1.0.0.0]
 ### Fixed
 - Synchronization of handcart when player changes dimension.
