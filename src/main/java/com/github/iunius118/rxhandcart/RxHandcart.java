@@ -9,7 +9,7 @@ import com.github.iunius118.rxhandcart.data.ModItemModelProvider;
 import com.github.iunius118.rxhandcart.data.ModLanguageProvider;
 import com.github.iunius118.rxhandcart.data.ModRecipeProvider;
 import com.github.iunius118.rxhandcart.network.NetworkHandler;
-import com.github.iunius118.rxhandcart.world.item.ModItemGroups;
+import com.github.iunius118.rxhandcart.world.item.ModCreativeModeTabs;
 import com.github.iunius118.rxhandcart.world.item.ModItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -49,8 +49,8 @@ public class RxHandcart {
 
         // Register mod event handlers
         modEventBus.addListener(this::registerItems);
+        modEventBus.addListener(this::registerCreativeModeTabs);
         modEventBus.addListener(this::gatherData);
-        modEventBus.register(ModItemGroups.class);
 
         // Register client-side event handler
         if (FMLLoader.getDist().isClient()) {
@@ -82,6 +82,13 @@ public class RxHandcart {
 
         event.register(Registries.ITEM, new ResourceLocation(RxHandcart.MOD_ID, "handcart"), () -> ModItems.HANDCART);
         event.register(Registries.ITEM, new ResourceLocation(RxHandcart.MOD_ID, "handcart_setting"), () -> ModItems.HANDCART_SETTING);
+    }
+
+    public void registerCreativeModeTabs(RegisterEvent event) {
+        if (!event.getRegistryKey().equals(Registries.CREATIVE_MODE_TAB))
+            return;
+
+        event.register(Registries.CREATIVE_MODE_TAB, new ResourceLocation(RxHandcart.MOD_ID, "general"), () -> ModCreativeModeTabs.MAIN);
     }
 
     public void gatherData(final GatherDataEvent event) {
