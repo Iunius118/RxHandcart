@@ -6,7 +6,7 @@ RxHandcartはMinecraftの世界にHandcart（荷車）を追加するmodです�
 
 ## Download
 
-- [v1.19.3-1.0.0.0](https://github.com/Iunius118/RxHandcart/releases/download/v1.19.3-1.0.0.0/RxHandcart-1.19.3-1.0.0.0.jar) for Minecraft 1.19.3, Forge 1.19.3-44.1.0+
+- [v2.0.0](https://github.com/Iunius118/RxHandcart/releases/download/v2.0.0/RxHandcart-1.20.1-2.0.0.jar) for Minecraft 1.20.1, Forge 1.20.1-47.1.0+
 
 ## Description
 
