@@ -8,16 +8,17 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(EntityRenderDispatcher.class)
 public class MixinEntityRenderDispatcher implements HandcartShadowRenderer {
     @Shadow
-    private static void renderBlockShadow(PoseStack.Pose pose, VertexConsumer vertexConsumer, LevelReader levelReader, BlockPos blockPos, double x, double y, double z, float radius, float strength) {}
+    private static void renderBlockShadow(PoseStack.Pose pose, VertexConsumer vertexConsumer, ChunkAccess chunkAccess, LevelReader levelReader, BlockPos blockPos, double x, double y, double z, float radius, float strength) {}
 
     @Override
-    public void renderHandcartShadow(HandcartRenderer.RenderHandcartShadowContext context) {
+    public void rxHandcart$renderHandcartShadow(HandcartRenderer.RenderHandcartShadowContext context) {
         double x = context.handcartPosition().x;
         double y = context.handcartPosition().y;
         double z = context.handcartPosition().z;
@@ -35,9 +36,11 @@ public class MixinEntityRenderDispatcher implements HandcartShadowRenderer {
         matrixStack.translate(x, y, z);
 
         PoseStack.Pose matrixEntry = matrixStack.last();
+        LevelReader level = context.level();
 
         for(BlockPos blockPos : BlockPos.betweenClosed(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ))) {
-            renderBlockShadow(matrixEntry, context.vertexBuilder(), context.level(), blockPos, x, y, z, shadowRadius, context.shadowStrength());
+            ChunkAccess chunkaccess = level.getChunk(blockPos);
+            renderBlockShadow(matrixEntry, context.vertexBuilder(), chunkaccess, level, blockPos, x, y, z, shadowRadius, context.shadowStrength());
         }
 
         matrixStack.popPose();

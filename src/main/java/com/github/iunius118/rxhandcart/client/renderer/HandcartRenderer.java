@@ -19,7 +19,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
@@ -36,7 +35,7 @@ public class HandcartRenderer {
             return;
 
         HandcartState state = stateOptional.get();
-        Level world = player.level;
+        Level world = player.level();
         Minecraft minecraft = Minecraft.getInstance();
         EntityRenderDispatcher entityRendererManager = minecraft.getEntityRenderDispatcher();
         EntityRenderer<? super Entity> entityRenderer = entityRendererManager.getRenderer(player);
@@ -67,7 +66,7 @@ public class HandcartRenderer {
             return;
 
         HandcartState state = stateOptional.get();
-        Level world = player.level;
+        Level world = player.level();
         GameRenderer gameRenderer = minecraft.gameRenderer;
         Camera mainCamera = gameRenderer.getMainCamera();
         Vec3 cameraPosition = mainCamera.getPosition();
@@ -77,7 +76,7 @@ public class HandcartRenderer {
         matrixStack.translate(-cameraPosition.x, -cameraPosition.y, -cameraPosition.z);
 
         Vec3 position = state.position;
-        int light = LevelRenderer.getLightColor(world, new BlockPos(position.x, position.y, position.z));
+        int light = LevelRenderer.getLightColor(world, new BlockPos.MutableBlockPos(position.x, position.y, position.z));
         renderHandcart(state, matrixStack, renderBuffer, light);
         // Render handcart's shadow
         renderShadow(position, matrixStack, renderBuffer);
@@ -117,8 +116,8 @@ public class HandcartRenderer {
 
         HandcartShadowRenderer blockShadowRenderer = (HandcartShadowRenderer) minecraft.getEntityRenderDispatcher();
         VertexConsumer vertexBuilder = renderBuffer.getBuffer(SHADOW_RENDER_TYPE);
-        var context = new RenderHandcartShadowContext(matrixStack, vertexBuilder, player.level, handcartPosition, SHADOW_RADIUS, shadowStrength);
-        blockShadowRenderer.renderHandcartShadow(context);
+        var context = new RenderHandcartShadowContext(matrixStack, vertexBuilder, player.level(), handcartPosition, SHADOW_RADIUS, shadowStrength);
+        blockShadowRenderer.rxHandcart$renderHandcartShadow(context);
     }
 
     private float getShadowStrength(Vec3 handcartPosition) {
@@ -131,5 +130,5 @@ public class HandcartRenderer {
         return  (float)(1.0D - cameraDistance / 256.0D);
     }
 
-    public record RenderHandcartShadowContext(PoseStack matrixStack, VertexConsumer vertexBuilder, LevelReader level, Vec3 handcartPosition, float shadowRadius, float shadowStrength) {}
+    public record RenderHandcartShadowContext(PoseStack matrixStack, VertexConsumer vertexBuilder, Level level, Vec3 handcartPosition, float shadowRadius, float shadowStrength) {}
 }

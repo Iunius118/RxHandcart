@@ -72,7 +72,7 @@ public class HandcartState {
             rot = (float) (Math.atan2(d.x, d.z) * (double) (180F / (float) Math.PI));
         }
 
-        double posY = getPositionY(owner.level, new BlockPos(posX, ownerPos.y, posZ));
+        double posY = getPositionY(owner.level(), new BlockPos.MutableBlockPos(posX, ownerPos.y, posZ), ownerPos.y);
         return Optional.of(new HandcartState(new Vec3(posX, posY, posZ), rot, handcartModel, textureLocation));
     }
 
