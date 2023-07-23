@@ -45,11 +45,7 @@ public class HandcartRenderer {
         matrixStack.pushPose();
         matrixStack.translate(-playerRenderPosition.x, -playerRenderPosition.y, -playerRenderPosition.z);
 
-        Vec3 position = state.position;
-        int light = LevelRenderer.getLightColor(world, new BlockPos(position.x, position.y, position.z));
-        renderHandcart(state, matrixStack, renderBuffer, light);
-        // Render handcart's shadow
-        renderShadow(position, matrixStack, renderBuffer);
+        renderHandcartAndShadow(matrixStack, state, world, renderBuffer);
 
         matrixStack.popPose();
     }
@@ -75,13 +71,17 @@ public class HandcartRenderer {
         matrixStack.pushPose();
         matrixStack.translate(-cameraPosition.x, -cameraPosition.y, -cameraPosition.z);
 
+        renderHandcartAndShadow(matrixStack, state, world, renderBuffer);
+
+        matrixStack.popPose();
+    }
+
+    private void renderHandcartAndShadow(PoseStack matrixStack, HandcartState state, Level world, MultiBufferSource renderBuffer) {
         Vec3 position = state.position;
         int light = LevelRenderer.getLightColor(world, new BlockPos.MutableBlockPos(position.x, position.y, position.z));
         renderHandcart(state, matrixStack, renderBuffer, light);
         // Render handcart's shadow
         renderShadow(position, matrixStack, renderBuffer);
-
-        matrixStack.popPose();
     }
 
     private void renderHandcart(HandcartState state, PoseStack matrixStack, MultiBufferSource renderBuffer, int light) {

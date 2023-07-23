@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -22,6 +23,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 public class HandcartState {
+    public static final float DEFAULT_DISTANCE = 1.2F;
     public final Vec3 position;
     public final float rotation;
     public final IHandcartModel model;
@@ -54,7 +56,7 @@ public class HandcartState {
         double posX;
         double posZ;
         float rot;
-        float distance = 1.2F;
+        float distance = DEFAULT_DISTANCE;
 
         if (ownerHorizontalMotion.lengthSqr() < 0.0001) {
             // Owner is almost stopped
@@ -84,57 +86,87 @@ public class HandcartState {
         }
     }
 
-    private static double getPositionY(Level level, BlockPos pos) {
-        int x = pos.getX();
-        int y = pos.getY();
-        int z = pos.getZ();
-        int worldHeight = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z);
-        BlockPos highestBlockPos = new BlockPos(x, worldHeight, z);
+    private static double getPositionY(Level level, final BlockPos pos, final double ownerY) {
+        final int x = pos.getX();
+        final int y = pos.getY();
+        final int z = pos.getZ();
+        final int worldHeight = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z);
+        final int minBuildHeight = level.getMinBuildHeight();
 
-        if (worldHeight <= y) {
-            return getBlockHeight(level, highestBlockPos) + (double) worldHeight;
+        if (y < minBuildHeight) {
+            // The owner is in the void
+            return ownerY;
+        } else if (worldHeight <= minBuildHeight) {
+            // The handcart is above the void
+            return minBuildHeight;
+        } else if (worldHeight - 1 <= y) {
+            // The handcart is under the sky
+            return getBlockHeight(level, new BlockPos(x, worldHeight - 1, z)) + worldHeight - 1;
         }
 
-        double blockHeight = getBlockHeight(level, new BlockPos(x, y, z));
+        // Search the level of the handcart from the level of the OWNER
+        double blockHeight = getBlockHeight(level, pos);
+        BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos(x, y, z);
 
-        if (blockHeight <= 0.0D) {
-            // Handcart's pos is lower than owner's one
-            int minBuildHeight = level.getMinBuildHeight();
+        if (blockHeight <= -1.0D) {
+            // The handcart is in fluid
+            return ownerY;
+        } else if (blockHeight <= 0.0D) {
+            // The handcart is under a roof
             for (int h = y - 1; h >= minBuildHeight; h--) {
-                blockHeight = getBlockHeight(level, new BlockPos(x, h, z));
+                // Search downward
+                blockHeight = getBlockHeight(level, blockPos.setY(h));
 
                 if (blockHeight > 0.0D) {
                     return h + blockHeight;
                 }
             }
-        } else {
-            // Handcart's pos is higher than owner's one
-            for (int h = y; h < worldHeight; h++) {
-                blockHeight = getBlockHeight(level, new BlockPos(x, h, z));
 
-                if (blockHeight < 1.0D) {
+            return ownerY;
+        } else if(blockHeight < 1.0D) {
+            return y + blockHeight;
+        } else {
+            // The handcart is higher than the owner
+            for (int h = y + 1; h < worldHeight; h++) {
+                // Search upward
+                blockHeight = getBlockHeight(level, blockPos.setY(h));
+
+                if (blockHeight <= -1.0D) {
+                    // The handcart is in fluid
+                    return h;
+                } if (blockHeight < 1.0D) {
                     return h + blockHeight;
                 }
             }
-        }
 
-        return getBlockHeight(level, highestBlockPos) + (double) worldHeight;
+            return worldHeight;
+        }
     }
 
     private static double getBlockHeight(Level level, BlockPos pos) {
         BlockState block = level.getBlockState(pos);
-        VoxelShape shape = block.getCollisionShape(level, pos);
+        VoxelShape shape = block.getVisualShape(level, pos, CollisionContext.empty());
 
         if (shape == Shapes.empty()) {
             FluidState fluidState = block.getFluidState();
-            if (!fluidState.isEmpty()) {
-                // Handcarts float on fluid
-                return fluidState.getOwnHeight();
+
+            if (fluidState.isEmpty()) {
+                // Shapeless like air
+                return 0.0D;
             }
 
-            return 0;
+            // Fluid
+            float h = fluidState.getHeight(level, pos);
+
+            if (h >= 1.0D) {
+                // The handcart is in fluid
+                return -1.0D;
+            } else {
+                // The handcart floats on fluid
+                return fluidState.getOwnHeight();
+            }
         }else if (shape == Shapes.block()) {
-            return 1;
+            return 1.0D;
         } else {
             return shape.max(Direction.Axis.Y);
         }
