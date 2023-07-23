@@ -1,7 +1,7 @@
-// 1.19.3	2023-02-05T22:54:46.155018	Recipes
-46ee11a7cb36431a5fb526bdc3c8d62f82679d24 data/rxhandcart/advancements/recipes/misc/handcart.json
-ea156147c789e865e28c26f61f154b2373519061 data/rxhandcart/advancements/recipes/misc/handcart_res.json
-6630630203d747b6313fa7e6e8bc1fee6a21b79e data/rxhandcart/advancements/recipes/misc/handcart_setting.json
-c86282c6b42a0c389f50cfcd3cc370bc5b406c1b data/rxhandcart/recipes/handcart.json
+// 1.20.1	2023-07-24T04:55:59.639007	Recipes
+994d3f390763e8e029bfd621c89ee3ff5e6357e6 data/rxhandcart/advancements/recipes/misc/handcart.json
+f30857888882c796a698556ed92912b429933cdf data/rxhandcart/advancements/recipes/misc/handcart_res.json
+458b52564c6480b6478ab3b621149baa3a9e1d73 data/rxhandcart/advancements/recipes/misc/handcart_setting.json
+043a40930345cca462356406eb85bc5862b31a9d data/rxhandcart/recipes/handcart.json
 5bf6699c10015f79437cd9c107e7e0458cea2d1e data/rxhandcart/recipes/handcart_res.json
 ced58029a28732c485d2b22a9bc44aa9d932064c data/rxhandcart/recipes/handcart_setting.json

@@ -30,5 +30,6 @@
     "recipes": [
       "rxhandcart:handcart_setting"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

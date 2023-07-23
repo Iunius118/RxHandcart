@@ -20,5 +20,6 @@
   ],
   "result": {
     "item": "rxhandcart:handcart"
-  }
+  },
+  "show_notification": true
 }
