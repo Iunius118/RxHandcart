@@ -1,29 +1,29 @@
 
 modLoader="javafml"
-loaderVersion="[44,)"
-license="All rights reserved"
-issueTrackerURL="https://github.com/Iunius118/RxHandcart/issues"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
+issueTrackerURL="${mod_issue_url}"
 
 [[mods]]
-modId="rxhandcart"
-version="${file.jarVersion}"
-displayName="RxHandcart"
-# updateJSONURL=""
-displayURL="https://github.com/Iunius118/RxHandcart"
-logoFile="rxhandcart_logo.png"
-credits="Created by Iunius118"
-authors="Iunius118"
-description="Adds a handcart."
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+# updateJSONURL="${mod_update_url}"
+displayURL="${mod_url}"
+logoFile="${mod_logos}"
+credits="${mod_credits}"
+authors="${mod_authors}"
+description='''${mod_description}'''
 
-[[dependencies.rxhandcart]]
+[[dependencies.${mod_id}]]
     modId="forge"
     mandatory=true
-    versionRange="[44,)"
+    versionRange="${forge_version_range}"
     ordering="NONE"
-    side="BOTH"
-[[dependencies.rxhandcart]]
+    side="${side}"
+[[dependencies.${mod_id}]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19.3,1.20)"
+    versionRange="${minecraft_version_range}"
     ordering="NONE"
-    side="BOTH"
+    side="${side}"
