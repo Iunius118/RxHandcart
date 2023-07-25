@@ -15,11 +15,11 @@ plugins {
 // MixinGradle:
 apply plugin: 'org.spongepowered.mixin'
 
-version = mod_version
+version = minecraft_version + '-' + mod_version
 group = mod_group_id
 
 base {
-    archivesName = archives_base_name + '-' + minecraft_version
+    archivesName = archives_base_name
 }
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
@@ -103,7 +103,7 @@ tasks.named('processResources', ProcessResources).configure {
             minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
             forge_version: forge_version, forge_version_range: forge_version_range,
             loader_version_range: loader_version_range, side: side,
-            mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: version,
+            mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
             mod_url: mod_url, mod_issue_url: mod_issue_url, mod_update_url: mod_update_url, mod_logos: mod_logos,
             mod_credits: mod_credits, mod_authors: mod_authors, mod_description: mod_description
     ]
